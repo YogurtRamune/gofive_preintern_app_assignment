@@ -8,28 +8,28 @@ import 'package:flutter/material.dart';
 ///   Theme.of(context).textTheme.bodyMedium
 abstract final class AppTheme {
   // ── Palette ──────────────────────────────────────────────────────────────
-  static const _primary = Color(0xFFE05A2B);
-  static const _onSurface = Color(0xFF1A1A1A);
-  static const _surface = Color(0xFFFFFFFF);
-  static const _outline = Color(0xFFE0E0E0);
-  static const _hint = Color(0xFFBDBDBD);
+  static const primary = Color(0xFFE05A2B);
+  static const onSurface = Color(0xFF1A1A1A);
+  static const surface = Color(0xFFFFFFFF);
+  static const outline = Color(0xFFE0E0E0);
+  static const hint = Color(0xFFBDBDBD);
 
   // ── Font ─────────────────────────────────────────────────────────────────
-  static const _font = 'VarelaRound'; // matches the family name in pubspec.yaml
+  static const font = 'VarelaRound'; // matches the family name in pubspec.yaml
 
   // ── Named background colours (set per-page on each Scaffold) ─────────────
   static const warmBackground = Color(0xFFFDF4F0);
 
   // ── Light theme ──────────────────────────────────────────────────────────
   static ThemeData get light => ThemeData(
-    fontFamily: _font, // ← global fallback for the whole app
+    fontFamily: font, // ← global fallback for the whole app
     // Colours
     colorScheme: const ColorScheme.light(
-      primary: _primary,
-      onPrimary: _surface,
-      surface: _surface,
-      onSurface: _onSurface,
-      outline: _outline,
+      primary: primary,
+      onPrimary: surface,
+      surface: surface,
+      onSurface: onSurface,
+      outline: outline,
     ),
 
     // Text styles
@@ -38,15 +38,19 @@ abstract final class AppTheme {
     // labelLarge  → button labels (ElevatedButton default)
     textTheme: const TextTheme(
       bodyMedium: TextStyle(
-        fontFamily: _font,
+        fontFamily: font,
         fontSize: 15.5,
         height: 1.55,
         fontWeight: FontWeight.w400,
-        color: _onSurface,
+        color: onSurface,
       ),
-      bodyLarge: TextStyle(fontFamily: _font, fontSize: 15, color: _onSurface),
+      bodyLarge: TextStyle(
+        fontFamily: font,
+        fontSize: 15,
+        color: onSurface
+      ),
       labelLarge: TextStyle(
-        fontFamily: _font,
+        fontFamily: font,
         fontSize: 16.5,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.3,
@@ -56,34 +60,34 @@ abstract final class AppTheme {
     // Input fields
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: _surface,
-      hintStyle: const TextStyle(fontFamily: _font, color: _hint, fontSize: 15),
+      fillColor: surface,
+      hintStyle: const TextStyle(fontFamily: font, color: hint, fontSize: 15),
       contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: _outline, width: 1.2),
+        borderSide: const BorderSide(color: outline, width: 1.2),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: _primary, width: 1.6),
+        borderSide: const BorderSide(color: primary, width: 1.6),
       ),
     ),
 
     // Buttons
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: _primary,
-        foregroundColor: _surface,
+        backgroundColor: primary,
+        foregroundColor: surface,
         elevation: 0,
-        textStyle: const TextStyle(fontFamily: _font), // ← button label
+        textStyle: const TextStyle(fontFamily: font), // ← button label
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: _primary,
+        foregroundColor: primary,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        textStyle: const TextStyle(fontFamily: _font), // ← button label
+        textStyle: const TextStyle(fontFamily: font), // ← button label
       ),
     ),
   );
