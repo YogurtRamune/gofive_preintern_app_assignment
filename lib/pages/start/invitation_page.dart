@@ -49,7 +49,6 @@ class _InvitationCodePageState extends State<InvitationCodePage> {
 
         const SizedBox(height: 36),
 
-        // Invitation Code input — decoration comes from InputDecorationTheme
         TextField(
           controller: _codeController,
           style: textTheme.bodyLarge,
@@ -58,7 +57,6 @@ class _InvitationCodePageState extends State<InvitationCodePage> {
 
         const SizedBox(height: 22),
 
-        // Confirm button — style comes from ElevatedButtonTheme
         SizedBox(
           width: double.infinity,
           height: 54,

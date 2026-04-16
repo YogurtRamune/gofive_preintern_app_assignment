@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_preintern_app/shared/data/app_theme.dart';
-import 'package:flutter_preintern_app/shared/data/lang_enum.dart';
+import 'package:flutter_preintern_app/shared/data/language_enum.dart';
 
 class LangSelectorSmall extends StatelessWidget {
   final LanguageEnum? lang;
@@ -19,7 +19,7 @@ class LangSelectorSmall extends StatelessWidget {
                   ListTile(
                     title: Text(
                       language.langName,
-                    ), // Displays 'UK' or 'TH'
+                    ),
                     leading: Image.asset(
                       language.iconImg,
                       height: 30,
@@ -49,7 +49,7 @@ class LangSelectorSmall extends StatelessWidget {
               backgroundColor: Colors.transparent,
             ),
           ),
-          Icon(Icons.keyboard_arrow_down_rounded, color: AppTheme.icon),
+          const Icon(Icons.keyboard_arrow_down_rounded, color: AppTheme.icon),
         ],
       ),
     );
