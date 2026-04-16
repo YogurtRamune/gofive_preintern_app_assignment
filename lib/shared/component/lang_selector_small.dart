@@ -1,10 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_preintern_app/shared/data/app_theme.dart';
+import 'package:flutter_preintern_app/shared/data/lang_enum.dart';
 
 class LangSelectorSmall extends StatelessWidget {
-  const LangSelectorSmall({super.key});
+  final LanguageEnum? lang;
+  const LangSelectorSmall({this.lang, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return GestureDetector(
+      onTap: () => showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return SafeArea(
+            child: ListView(
+              children: [
+                for (var language in LanguageEnum.values)
+                  ListTile(
+                    title: Text(
+                      language.langName,
+                    ), // Displays 'UK' or 'TH'
+                    leading: Image.asset(
+                      language.iconImg,
+                      height: 30,
+                      width: 30,
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+              ],
+            ),
+          );
+        },
+        barrierColor: AppTheme.primary.withAlpha(50),
+        showDragHandle: true,
+      ),
+      child: Row(
+        crossAxisAlignment: .center,
+        mainAxisAlignment: .end,
+        children: [
+          SizedBox.square(
+            dimension: 30,
+            child: CircleAvatar(
+              foregroundImage: AssetImage(
+                lang?.iconImg ?? LanguageEnum.uk.iconImg,
+              ),
+              backgroundColor: Colors.transparent,
+            ),
+          ),
+          Icon(Icons.keyboard_arrow_down_rounded, color: AppTheme.icon),
+        ],
+      ),
+    );
   }
 }

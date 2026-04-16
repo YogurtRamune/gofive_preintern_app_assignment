@@ -19,7 +19,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - asset/img/EmpeoLogo.png
+    - asset/img/
+    - asset/img/icon/
+    - asset/img/icon/lang/
   fonts:
     - family: VarelaRound
       fonts:

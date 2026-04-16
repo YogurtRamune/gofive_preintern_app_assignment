@@ -13,12 +13,13 @@ abstract final class AppTheme {
   static const surface = Color(0xFFFFFFFF);
   static const outline = Color(0xFFE0E0E0);
   static const hint = Color(0xFFBDBDBD);
+  static const icon = Color.fromARGB(255, 181, 143, 143);
 
   // ── Font ─────────────────────────────────────────────────────────────────
   static const font = 'VarelaRound'; // matches the family name in pubspec.yaml
 
   // ── Named background colours (set per-page on each Scaffold) ─────────────
-  static const warmBackground = Color(0xFFFDF4F0);
+  static const warmBackground = Color(0xFFFFFFFF); //Color(0xFFFDF4F0);
 
   // ── Light theme ──────────────────────────────────────────────────────────
   static ThemeData get light => ThemeData(
@@ -44,11 +45,7 @@ abstract final class AppTheme {
         fontWeight: FontWeight.w400,
         color: onSurface,
       ),
-      bodyLarge: TextStyle(
-        fontFamily: font,
-        fontSize: 15,
-        color: onSurface
-      ),
+      bodyLarge: TextStyle(fontFamily: font, fontSize: 15, color: onSurface),
       labelLarge: TextStyle(
         fontFamily: font,
         fontSize: 16.5,
