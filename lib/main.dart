@@ -85,9 +85,12 @@ class _InvitationCodePageState extends State<InvitationCodePage> {
                         const SizedBox(height: 40),
 
                         // Logo
-                        Image.asset('assets/img/EmpeoLogo.png'),
+                        SizedBox.square(
+                          dimension: 150,
+                          child: Image.asset('asset/img/EmpeoLogo.png')
+                        ),
 
-                        const SizedBox(height: 36),
+                        const SizedBox(height: 10),
 
                         // Description text — uses bodyMedium from theme
                         Text(

@@ -7,20 +7,22 @@ import 'package:flutter/material.dart';
 ///   Theme.of(context).colorScheme.primary
 ///   Theme.of(context).textTheme.bodyMedium
 abstract final class AppTheme {
-  // ── Palette ────────────────────────────────────────────────────────────────
+  // ── Palette ──────────────────────────────────────────────────────────────
   static const _primary = Color(0xFFE05A2B);
   static const _onSurface = Color(0xFF1A1A1A);
   static const _surface = Color(0xFFFFFFFF);
   static const _outline = Color(0xFFE0E0E0);
   static const _hint = Color(0xFFBDBDBD);
 
-  // ── Named background colours (set per-page on each Scaffold) ───────────────
+  // ── Font ─────────────────────────────────────────────────────────────────
+  static const _font = 'VarelaRound'; // matches the family name in pubspec.yaml
+
+  // ── Named background colours (set per-page on each Scaffold) ─────────────
   static const warmBackground = Color(0xFFFDF4F0);
 
-  // ── Light theme ────────────────────────────────────────────────────────────
+  // ── Light theme ──────────────────────────────────────────────────────────
   static ThemeData get light => ThemeData(
-    fontFamily: 'Roboto',
-
+    fontFamily: _font, // ← global fallback for the whole app
     // Colours
     colorScheme: const ColorScheme.light(
       primary: _primary,
@@ -29,19 +31,22 @@ abstract final class AppTheme {
       onSurface: _onSurface,
       outline: _outline,
     ),
+
     // Text styles
     // bodyMedium  → body copy (description paragraph)
     // bodyLarge   → text-field input value
     // labelLarge  → button labels (ElevatedButton default)
     textTheme: const TextTheme(
       bodyMedium: TextStyle(
+        fontFamily: _font,
         fontSize: 15.5,
         height: 1.55,
         fontWeight: FontWeight.w400,
         color: _onSurface,
       ),
-      bodyLarge: TextStyle(fontSize: 15, color: _onSurface),
+      bodyLarge: TextStyle(fontFamily: _font, fontSize: 15, color: _onSurface),
       labelLarge: TextStyle(
+        fontFamily: _font,
         fontSize: 16.5,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.3,
@@ -52,7 +57,7 @@ abstract final class AppTheme {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: _surface,
-      hintStyle: const TextStyle(color: _hint, fontSize: 15),
+      hintStyle: const TextStyle(fontFamily: _font, color: _hint, fontSize: 15),
       contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -70,6 +75,7 @@ abstract final class AppTheme {
         backgroundColor: _primary,
         foregroundColor: _surface,
         elevation: 0,
+        textStyle: const TextStyle(fontFamily: _font), // ← button label
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     ),
@@ -77,6 +83,7 @@ abstract final class AppTheme {
       style: TextButton.styleFrom(
         foregroundColor: _primary,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        textStyle: const TextStyle(fontFamily: _font), // ← button label
       ),
     ),
   );
