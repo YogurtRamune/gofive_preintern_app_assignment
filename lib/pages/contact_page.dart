@@ -1,22 +1,19 @@
-// lib/pages/contact_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_preintern_app/shared/data/app_theme.dart';
-
-// ── Mock Data Models ──────────────────────────────────────────────────────────
 
 class _StaffMember {
   final String name;
   final String role;
   final Color avatarColor;
   final String initials;
-  final String? avatarEmoji; // optional emoji for fun avatars
+  final String? avatarEmoji;
 
   const _StaffMember({
     required this.name,
     required this.role,
     required this.avatarColor,
     required this.initials,
+    // ignore: unused_element_parameter
     this.avatarEmoji,
   });
 }
@@ -32,8 +29,6 @@ class _RecentSearch {
     required this.initials,
   });
 }
-
-// ── Mock Data ─────────────────────────────────────────────────────────────────
 
 const List<_RecentSearch> _mockRecentSearches = [
   _RecentSearch(label: 'Alice', avatarColor: Color(0xFFD4A5C9), initials: 'A'),
@@ -138,8 +133,6 @@ const List<_StaffMember> _mockOwnTeam = [
   ),
 ];
 
-// ── Page ──────────────────────────────────────────────────────────────────────
-
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
 
@@ -178,7 +171,6 @@ class _ContactPageState extends State<ContactPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Search bar ───────────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: _SearchBar(
@@ -186,12 +178,9 @@ class _ContactPageState extends State<ContactPage> {
                 onChanged: (v) => setState(() => _query = v),
               ),
             ),
-
-            // ── Scrollable body ──────────────────────────────────────────────
             Expanded(
               child: CustomScrollView(
                 slivers: [
-                  // Recent Searches (hidden when filtering)
                   if (_query.isEmpty) ...[
                     const _SectionHeader(title: 'Recent Searches'),
                     SliverToBoxAdapter(
@@ -199,11 +188,7 @@ class _ContactPageState extends State<ContactPage> {
                     ),
                     const SliverToBoxAdapter(child: SizedBox(height: 8)),
                   ],
-
-                  // Own Team header
                   const _SectionHeader(title: 'Own Team'),
-
-                  // Team list
                   SliverList.separated(
                     itemCount: _filteredTeam.length,
                     separatorBuilder: (_, _) => const Divider(
@@ -215,8 +200,6 @@ class _ContactPageState extends State<ContactPage> {
                     itemBuilder: (context, index) =>
                         _StaffTile(member: _filteredTeam[index]),
                   ),
-
-                  // Bottom padding for nav bar
                   const SliverToBoxAdapter(child: SizedBox(height: 80)),
                 ],
               ),
@@ -227,8 +210,6 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 }
-
-// ── Search Bar ────────────────────────────────────────────────────────────────
 
 class _SearchBar extends StatelessWidget {
   final TextEditingController controller;
@@ -260,10 +241,7 @@ class _SearchBar extends StatelessWidget {
               weight: 900,
             ),
           ),
-          prefixIconConstraints: BoxConstraints(
-            minWidth: 0, // Adjust this value to reduce/increase gap
-            minHeight: 0,
-          ),
+          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
@@ -274,8 +252,6 @@ class _SearchBar extends StatelessWidget {
     );
   }
 }
-
-// ── Section Header ────────────────────────────────────────────────────────────
 
 class _SectionHeader extends StatelessWidget {
   final String title;
@@ -298,8 +274,6 @@ class _SectionHeader extends StatelessWidget {
     );
   }
 }
-
-// ── Recent Searches Row ───────────────────────────────────────────────────────
 
 class _RecentSearchesRow extends StatelessWidget {
   final List<_RecentSearch> items;
@@ -357,8 +331,6 @@ class _RecentSearchChip extends StatelessWidget {
   }
 }
 
-// ── Staff Tile ────────────────────────────────────────────────────────────────
-
 class _StaffTile extends StatelessWidget {
   final _StaffMember member;
   const _StaffTile({required this.member});
@@ -371,7 +343,6 @@ class _StaffTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(
           children: [
-            // Avatar
             CircleAvatar(
               radius: 24,
               backgroundColor: member.avatarColor,
@@ -385,8 +356,6 @@ class _StaffTile extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-
-            // Name + Role
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

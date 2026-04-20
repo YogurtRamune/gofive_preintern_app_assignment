@@ -57,7 +57,6 @@ class _LoginPageState extends State<LoginPage> {
       additionalAction: _HelpButton(),
       footer: const _FooterText(),
       children: [
-        // ── Email ──────────────────────────────────────────────────────────
         StartTextField(
           controller: _emailController,
           hintText: 'Email',
@@ -83,7 +82,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
 
-        // ── Forgot password ────────────────────────────────────────────────
         Align(
           alignment: Alignment.centerRight,
           child: TextButton(
@@ -97,22 +95,18 @@ class _LoginPageState extends State<LoginPage> {
 
         const SizedBox(height: 6),
 
-        // ── Sign in button ─────────────────────────────────────────────────
         StartPrimaryButton(label: 'Sign in', onPressed: _onSignIn),
 
         const SizedBox(height: 28),
 
-        // ── "or continue with" divider ─────────────────────────────────────
         const _OrDivider(),
 
         const SizedBox(height: 18),
 
-        // ── Social sign-in row ─────────────────────────────────────────────
         _SocialSignInRow(onTap: _onSocialSignIn),
 
         const SizedBox(height: 5),
 
-        // ── Sign in without email ──────────────────────────────────────────
         TextButton(
           onPressed: _onSignInWithoutEmail,
           child: const Text('Sign in without email'),
@@ -122,9 +116,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-// ── Private sub-widgets ──────────────────────────────────────────────────────
-
-/// The orange help (?) button shown in the AppBar.
 class _HelpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -144,7 +135,7 @@ class _HelpButton extends StatelessWidget {
         child: const Icon(
           Icons.question_mark_rounded,
           color: Colors.white,
-          size: size-5,
+          size: size - 5,
           fontWeight: .w900,
         ),
       ),
@@ -152,7 +143,6 @@ class _HelpButton extends StatelessWidget {
   }
 }
 
-/// Horizontal rule with centred "or continue with" label.
 class _OrDivider extends StatelessWidget {
   const _OrDivider();
 
@@ -178,7 +168,6 @@ class _OrDivider extends StatelessWidget {
   }
 }
 
-/// Four social-provider circle buttons: Google, Microsoft, Facebook, LINE.
 class _SocialSignInRow extends StatelessWidget {
   final void Function(String provider) onTap;
   const _SocialSignInRow({required this.onTap});
@@ -223,7 +212,6 @@ class _SocialSignInRow extends StatelessWidget {
   }
 }
 
-/// A single outlined circle that wraps a social-provider icon.
 class _SocialButton extends StatelessWidget {
   final Widget child;
   final VoidCallback onTap;
@@ -255,7 +243,6 @@ class _SocialButton extends StatelessWidget {
   }
 }
 
-/// "By continuing, you agree to our Terms & Conditions AND Privacy Policy"
 class _FooterText extends StatelessWidget {
   const _FooterText();
 
@@ -268,7 +255,7 @@ class _FooterText extends StatelessWidget {
     return Text(
       'By continuing, you agree to our\nTerms & Conditions AND Privacy Policy',
       style: style,
-      textAlign: .center,
+      textAlign: TextAlign.center,
     );
   }
 }

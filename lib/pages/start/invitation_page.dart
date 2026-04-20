@@ -42,28 +42,19 @@ class _InvitationCodePageState extends State<InvitationCodePage> {
 
     return StartPageScaffold(
       children: [
-        // Description text — uses bodyMedium from theme
         Text(
           'Please fill in the Invitation Code provided by your administrator to access empeo within your company.',
           textAlign: TextAlign.center,
           style: textTheme.bodyMedium,
         ),
-
         const SizedBox(height: 23),
-
         StartTextField(
           controller: _codeController,
           hintText: 'Invitation Code',
         ),
-        
         const SizedBox(height: 22),
-
-        // ← refactored: was SizedBox(height:54) + ElevatedButton inline
         StartPrimaryButton(label: 'Confirm', onPressed: _onConfirm),
-
         const SizedBox(height: 10),
-
-        // Skip link — style comes from TextButtonTheme
         TextButton(onPressed: _onSkip, child: const Text('Skip')),
       ],
     );
