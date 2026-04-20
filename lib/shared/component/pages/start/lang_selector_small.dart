@@ -41,7 +41,7 @@ class LangSelectorSmall extends StatelessWidget {
         mainAxisAlignment: .end,
         children: [
           SizedBox.square(
-            dimension: 30,
+            dimension: 25,
             child: CircleAvatar(
               foregroundImage: AssetImage(
                 lang?.iconImg ?? LanguageEnum.uk.iconImg,
@@ -49,7 +49,7 @@ class LangSelectorSmall extends StatelessWidget {
               backgroundColor: Colors.transparent,
             ),
           ),
-          const Icon(Icons.keyboard_arrow_down_rounded, color: AppTheme.icon),
+          const Icon(Icons.keyboard_arrow_down_rounded, color: AppTheme.icon, size: 20,),
         ],
       ),
     );

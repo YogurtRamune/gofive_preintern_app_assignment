@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_preintern_app/shared/component/start_page_scaffold.dart';
+import 'package:flutter_preintern_app/shared/component/pages/start/start_page_scaffold.dart';
+import 'package:flutter_preintern_app/shared/component/pages/start/start_primary_button.dart';
+import 'package:flutter_preintern_app/shared/component/pages/start/start_text_field.dart';
 
 class InvitationCodePage extends StatefulWidget {
   const InvitationCodePage({super.key});
@@ -47,26 +49,19 @@ class _InvitationCodePageState extends State<InvitationCodePage> {
           style: textTheme.bodyMedium,
         ),
 
-        const SizedBox(height: 36),
+        const SizedBox(height: 23),
 
-        TextField(
+        StartTextField(
           controller: _codeController,
-          style: textTheme.bodyLarge,
-          decoration: const InputDecoration(hintText: 'Invitation Code'),
+          hintText: 'Invitation Code',
         ),
-
+        
         const SizedBox(height: 22),
 
-        SizedBox(
-          width: double.infinity,
-          height: 54,
-          child: ElevatedButton(
-            onPressed: _onConfirm,
-            child: const Text('Confirm'),
-          ),
-        ),
+        // ← refactored: was SizedBox(height:54) + ElevatedButton inline
+        StartPrimaryButton(label: 'Confirm', onPressed: _onConfirm),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
 
         // Skip link — style comes from TextButtonTheme
         TextButton(onPressed: _onSkip, child: const Text('Skip')),

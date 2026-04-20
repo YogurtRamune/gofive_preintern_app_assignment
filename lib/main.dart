@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_preintern_app/pages/contact_page.dart';
 import 'package:flutter_preintern_app/shared/data/app_theme.dart';
-import 'package:flutter_preintern_app/pages/start/invitation_page.dart';
 
 void main() {
   runApp(const EmpeoApp());
@@ -15,7 +15,7 @@ class EmpeoApp extends StatelessWidget {
       title: 'Empeo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      home: const InvitationCodePage(),
+      home: const ContactPage(),
     );
   }
 }

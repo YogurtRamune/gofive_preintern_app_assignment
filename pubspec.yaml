@@ -22,6 +22,9 @@ flutter:
     - asset/img/
     - asset/img/icon/
     - asset/img/icon/lang/
+    - asset/img/logo/
+    - asset/img/deco/
+    - asset/img/logo/external/
   fonts:
     - family: VarelaRound
       fonts:

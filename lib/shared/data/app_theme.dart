@@ -40,15 +40,19 @@ abstract final class AppTheme {
     textTheme: const TextTheme(
       bodyMedium: TextStyle(
         fontFamily: font,
-        fontSize: 15.5,
+        fontSize: 13, //15.5,
         height: 1.55,
         fontWeight: FontWeight.w400,
         color: onSurface,
       ),
-      bodyLarge: TextStyle(fontFamily: font, fontSize: 15, color: onSurface),
+      bodyLarge: TextStyle(
+        fontFamily: font,
+        fontSize: 13.5, //15,
+        color: onSurface,
+      ),
       labelLarge: TextStyle(
         fontFamily: font,
-        fontSize: 16.5,
+        fontSize: 14, //16.5,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.3,
       ),
@@ -58,8 +62,12 @@ abstract final class AppTheme {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: surface,
-      hintStyle: const TextStyle(fontFamily: font, color: hint, fontSize: 15),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+      hintStyle: const TextStyle(
+        fontFamily: font,
+        color: hint,
+        fontSize: 13.5 /*15*/,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: outline, width: 1.2),
@@ -76,7 +84,12 @@ abstract final class AppTheme {
         backgroundColor: primary,
         foregroundColor: surface,
         elevation: 0,
-        textStyle: const TextStyle(fontFamily: font), // ← button label
+        shadowColor: Colors.transparent,
+        textStyle: const TextStyle(
+          fontFamily: font,
+          fontSize: 14,
+          fontWeight: .w800
+        ), // ← button label
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     ),
@@ -84,7 +97,11 @@ abstract final class AppTheme {
       style: TextButton.styleFrom(
         foregroundColor: primary,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        textStyle: const TextStyle(fontFamily: font), // ← button label
+        textStyle: const TextStyle(
+          fontFamily: font,
+          fontSize: 14,
+          fontWeight: .w800
+        ), // ← button label
       ),
     ),
   );
