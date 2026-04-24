@@ -24,6 +24,10 @@ abstract final class AppTheme {
   // ── Light theme ──────────────────────────────────────────────────────────
   static ThemeData get light => ThemeData(
     fontFamily: font, // ← global fallback for the whole app
+    extensions: const [AppTextStyles.light],
+    badgeTheme: BadgeThemeData(
+      backgroundColor: Color.fromARGB(255, 255, 42, 56)
+    ),
     // Colours
     colorScheme: const ColorScheme.light(
       primary: primary,
@@ -88,7 +92,7 @@ abstract final class AppTheme {
         textStyle: const TextStyle(
           fontFamily: font,
           fontSize: 14,
-          fontWeight: .w800
+          fontWeight: .w800,
         ), // ← button label
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -100,9 +104,62 @@ abstract final class AppTheme {
         textStyle: const TextStyle(
           fontFamily: font,
           fontSize: 14,
-          fontWeight: .w800
+          fontWeight: .w800,
         ), // ← button label
       ),
     ),
   );
+}
+
+/// Custom text styles that don't belong in Flutter's standard [TextTheme].
+///
+/// Access via:
+///   Theme.of(context).extension<AppTextStyles>()!.sectionHeader
+///   Theme.of(context).extension<AppTextStyles>()!.avatarInitial
+class AppTextStyles extends ThemeExtension<AppTextStyles> {
+  const AppTextStyles({
+    required this.sectionHeader,
+    required this.avatarInitial,
+  });
+
+  /// Bold label used for list section headers (e.g. "Own Team").
+  final TextStyle sectionHeader;
+
+  /// Base style for initials inside a [CircleAvatar] — white + semi-bold.
+  /// Supply [fontSize] via [copyWith] to match the avatar radius:
+  ///   `ext.avatarInitial.copyWith(fontSize: 14)`
+  final TextStyle avatarInitial;
+
+  /// Default instance registered in [AppTheme.light].
+  static const light = AppTextStyles(
+    sectionHeader: TextStyle(
+      fontFamily: AppTheme.font,
+      fontSize: 15,
+      fontWeight: FontWeight.w700,
+      color: AppTheme.onSurface,
+    ),
+    avatarInitial: TextStyle(
+      fontFamily: AppTheme.font,
+      color: Colors.white,
+      fontWeight: FontWeight.w600,
+    ),
+  );
+
+  @override
+  AppTextStyles copyWith({
+    TextStyle? sectionHeader,
+    TextStyle? avatarInitial,
+  }) => AppTextStyles(
+    sectionHeader: sectionHeader ?? this.sectionHeader,
+    avatarInitial: avatarInitial ?? this.avatarInitial,
+  );
+
+  @override
+  AppTextStyles lerp(AppTextStyles? other, double t) {
+    if (other == null) return this;
+    return AppTextStyles(
+      sectionHeader: TextStyle.lerp(sectionHeader, other.sectionHeader, t)!,
+      avatarInitial: TextStyle.lerp(avatarInitial, other.avatarInitial, t)!,
+    );
+  }
 }

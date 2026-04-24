@@ -189,14 +189,8 @@ class _ContactPageState extends State<ContactPage> {
                     const SliverToBoxAdapter(child: SizedBox(height: 8)),
                   ],
                   const _SectionHeader(title: 'Own Team'),
-                  SliverList.separated(
+                  SliverList.builder(
                     itemCount: _filteredTeam.length,
-                    separatorBuilder: (_, _) => const Divider(
-                      height: 0,
-                      indent: 72,
-                      thickness: 0.5,
-                      color: AppTheme.outline,
-                    ),
                     itemBuilder: (context, index) =>
                         _StaffTile(member: _filteredTeam[index]),
                   ),
@@ -228,10 +222,14 @@ class _SearchBar extends StatelessWidget {
       child: TextField(
         controller: controller,
         onChanged: onChanged,
-        style: const TextStyle(fontSize: 14, color: AppTheme.onSurface),
-        decoration: const InputDecoration(
+        // labelLarge: fontSize 14, w500 — matches the input value style
+        style: Theme.of(context).textTheme.labelLarge,
+        decoration: InputDecoration(
           hintText: 'Search staff name, role, or email',
-          hintStyle: TextStyle(fontSize: 13.5, color: AppTheme.hint),
+          // bodyLarge: fontSize 13.5 — override color to hint
+          hintStyle: Theme.of(
+            context,
+          ).textTheme.bodyLarge!.copyWith(color: AppTheme.hint),
           prefixIcon: Padding(
             padding: EdgeInsets.only(left: 15, right: 2.6),
             child: Icon(
@@ -264,11 +262,7 @@ class _SectionHeader extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 10),
         child: Text(
           title,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            color: AppTheme.onSurface,
-          ),
+          style: Theme.of(context).extension<AppTextStyles>()!.sectionHeader,
         ),
       ),
     );
@@ -308,11 +302,9 @@ class _RecentSearchChip extends StatelessWidget {
           backgroundColor: item.avatarColor,
           child: Text(
             item.initials,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).extension<AppTextStyles>()!.avatarInitial.copyWith(fontSize: 14),
           ),
         ),
         const SizedBox(height: 5),
@@ -323,7 +315,10 @@ class _RecentSearchChip extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 11, color: AppTheme.onSurface),
+            // bodyMedium: onSurface color — override size to 11 (smaller than default 13)
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium!.copyWith(fontSize: 11),
           ),
         ),
       ],
@@ -348,11 +343,10 @@ class _StaffTile extends StatelessWidget {
               backgroundColor: member.avatarColor,
               child: Text(
                 member.initials,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(context)
+                    .extension<AppTextStyles>()!
+                    .avatarInitial
+                    .copyWith(fontSize: 13),
               ),
             ),
             const SizedBox(width: 12),
@@ -365,16 +359,19 @@ class _StaffTile extends StatelessWidget {
                     member.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppTheme.onSurface,
-                    ),
+                    // labelLarge: fontSize 14, w500 — exact match for staff name
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelLarge!.copyWith(color: AppTheme.onSurface),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     member.role,
-                    style: const TextStyle(fontSize: 12, color: AppTheme.hint),
+                    // bodyMedium: w400 base — override size to 12 and color to hint
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontSize: 12,
+                      color: AppTheme.hint,
+                    ),
                   ),
                 ],
               ),
