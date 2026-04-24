@@ -23,12 +23,11 @@ abstract final class AppTheme {
 
   // ── Light theme ──────────────────────────────────────────────────────────
   static ThemeData get light => ThemeData(
-    fontFamily: font, // ← global fallback for the whole app
+    fontFamily: font,
     extensions: const [AppTextStyles.light],
     badgeTheme: BadgeThemeData(
-      backgroundColor: Color.fromARGB(255, 255, 42, 56)
+      backgroundColor: Color.fromARGB(255, 255, 42, 56),
     ),
-    // Colours
     colorScheme: const ColorScheme.light(
       primary: primary,
       onPrimary: surface,
@@ -37,40 +36,27 @@ abstract final class AppTheme {
       outline: outline,
     ),
 
-    // Text styles
-    // bodyMedium  → body copy (description paragraph)
-    // bodyLarge   → text-field input value
-    // labelLarge  → button labels (ElevatedButton default)
     textTheme: const TextTheme(
       bodyMedium: TextStyle(
         fontFamily: font,
-        fontSize: 13, //15.5,
+        fontSize: 13,
         height: 1.55,
         fontWeight: FontWeight.w400,
         color: onSurface,
       ),
-      bodyLarge: TextStyle(
-        fontFamily: font,
-        fontSize: 13.5, //15,
-        color: onSurface,
-      ),
+      bodyLarge: TextStyle(fontFamily: font, fontSize: 13.5, color: onSurface),
       labelLarge: TextStyle(
         fontFamily: font,
-        fontSize: 14, //16.5,
+        fontSize: 14,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.3,
       ),
     ),
 
-    // Input fields
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: surface,
-      hintStyle: const TextStyle(
-        fontFamily: font,
-        color: hint,
-        fontSize: 13.5 /*15*/,
-      ),
+      hintStyle: const TextStyle(fontFamily: font, color: hint, fontSize: 13.5),
       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -82,7 +68,6 @@ abstract final class AppTheme {
       ),
     ),
 
-    // Buttons
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primary,
@@ -92,8 +77,8 @@ abstract final class AppTheme {
         textStyle: const TextStyle(
           fontFamily: font,
           fontSize: 14,
-          fontWeight: .w800,
-        ), // ← button label
+          fontWeight: FontWeight.w800,
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     ),
@@ -104,8 +89,8 @@ abstract final class AppTheme {
         textStyle: const TextStyle(
           fontFamily: font,
           fontSize: 14,
-          fontWeight: .w800,
-        ), // ← button label
+          fontWeight: FontWeight.w800,
+        ),
       ),
     ),
   );
@@ -120,6 +105,7 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
   const AppTextStyles({
     required this.sectionHeader,
     required this.avatarInitial,
+    required this.pinText,
   });
 
   /// Bold label used for list section headers (e.g. "Own Team").
@@ -129,6 +115,8 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
   /// Supply [fontSize] via [copyWith] to match the avatar radius:
   ///   `ext.avatarInitial.copyWith(fontSize: 14)`
   final TextStyle avatarInitial;
+
+  final TextStyle pinText;
 
   /// Default instance registered in [AppTheme.light].
   static const light = AppTextStyles(
@@ -143,15 +131,23 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
       color: Colors.white,
       fontWeight: FontWeight.w600,
     ),
+    pinText: TextStyle(
+      fontFamily: AppTheme.font,
+      fontSize: 19,
+      fontWeight: FontWeight.w700,
+      color: AppTheme.onSurface,
+    ),
   );
 
   @override
   AppTextStyles copyWith({
     TextStyle? sectionHeader,
     TextStyle? avatarInitial,
+    TextStyle? pinText,
   }) => AppTextStyles(
     sectionHeader: sectionHeader ?? this.sectionHeader,
     avatarInitial: avatarInitial ?? this.avatarInitial,
+    pinText: pinText ?? this.pinText,
   );
 
   @override
@@ -160,6 +156,7 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
     return AppTextStyles(
       sectionHeader: TextStyle.lerp(sectionHeader, other.sectionHeader, t)!,
       avatarInitial: TextStyle.lerp(avatarInitial, other.avatarInitial, t)!,
+      pinText: TextStyle.lerp(pinText, other.pinText, t)!,
     );
   }
 }

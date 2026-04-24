@@ -19,44 +19,84 @@ class PinPage extends StatelessWidget {
                   height: constrain.maxHeight / 3,
                   child: ColoredBox(
                     color: Theme.of(context).colorScheme.surface,
-                    child: Column(
+                    child: Row(
                       children: [
+                        Flexible(flex: 1, child: SizedBox.expand()),
                         Flexible(
-                          child: Row(
+                          flex: 3,
+                          child: Column(
                             children: [
-                              Flexible(child: _Button(child: Text('1'),)),
-                              Flexible(child: _Button(child: Text('2'),)),
-                              Flexible(child: _Button(child: Text('3'))),
+                              Flexible(flex: 1, child: SizedBox.expand()),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(child: Text('1')),
+                              ),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(child: Text('4')),
+                              ),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(child: Text('7')),
+                              ),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(child: SizedBox.shrink()),
+                              ),
                             ],
                           ),
                         ),
                         Flexible(
-                          child: Row(
+                          flex: 3,
+                          child: Column(
                             children: [
-                              Flexible(child: _Button(child: Text('4'))),
-                              Flexible(child: _Button(child: Text('5'))),
-                              Flexible(child: _Button(child: Text('6'))),
+                              Flexible(flex: 1, child: SizedBox.expand()),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(child: Text('2')),
+                              ),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(child: Text('5')),
+                              ),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(child: Text('8')),
+                              ),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(child: Text('0')),
+                              ),
                             ],
                           ),
                         ),
                         Flexible(
-                          child: Row(
+                          flex: 3,
+                          child: Column(
                             children: [
-                              Flexible(child: _Button(child: Text('7'))),
-                              Flexible(child: _Button(child: Text('8'))),
-                              Flexible(child: _Button(child: Text('9'))),
+                              Flexible(flex: 1, child: SizedBox.expand()),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(child: Text('3')),
+                              ),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(child: Text('6')),
+                              ),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(child: Text('9')),
+                              ),
+                              Flexible(
+                                flex: 10,
+                                child: _Button(
+                                  child: Icon(Icons.backspace_outlined),
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                        Flexible(
-                          child: Row(
-                            children: [
-                              Flexible(child: _Button(child: SizedBox.shrink(),)),
-                              Flexible(child: _Button(child: Text('0'))),
-                              Flexible(child: _Button(child: Icon(Icons.backspace_outlined))),
-                            ],
-                          ),
-                        ),
+                        Flexible(flex: 1, child: SizedBox.expand()),
                       ],
                     ),
                   ),
@@ -74,13 +114,14 @@ class _Button extends StatelessWidget {
   final Widget? child;
   final void Function()? onTap;
   final TextStyle? _textStyle;
-  const _Button({super.key, this.child, TextStyle? textStyle, this.onTap}): _textStyle = textStyle;
+  const _Button({super.key, this.child, TextStyle? textStyle, this.onTap})
+    : _textStyle = textStyle;
 
   @override
   Widget build(BuildContext context) {
-
     if (child == null) return const Placeholder();
-    final TextStyle textStyle = _textStyle ?? Theme.of(context).extension<AppTextStyles>()!.sectionHeader;
+    final TextStyle textStyle =
+        _textStyle ?? Theme.of(context).extension<AppTextStyles>()!.pinText;
 
     return InkWell(
       onTap: onTap,
