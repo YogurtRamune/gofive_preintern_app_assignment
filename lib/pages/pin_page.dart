@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_preintern_app/shared/data/app_theme.dart';
 
 class _PinNotifier extends InheritedNotifier<ValueNotifier<List<int>>> {
   const _PinNotifier({
+    // ignore: unused_element_parameter
     super.key,
     required super.notifier,
     required super.child,
@@ -10,6 +13,10 @@ class _PinNotifier extends InheritedNotifier<ValueNotifier<List<int>>> {
 
   static ValueNotifier<List<int>> of(BuildContext context) {
     return context.getInheritedWidgetOfExactType<_PinNotifier>()!.notifier!;
+  }
+
+   static ValueNotifier<List<int>> dependOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<_PinNotifier>()!.notifier!;
   }
 
   static void addDigitOf(BuildContext context, int digit) {
@@ -28,6 +35,11 @@ class _PinNotifier extends InheritedNotifier<ValueNotifier<List<int>>> {
 
   static double alphaOf(BuildContext context) {
     return of(context).value.length / 6.0;
+  }
+
+  static ({int filled, int empty}) filledOf(BuildContext context) {
+    int filled = dependOf(context).value.length;
+    return (empty: 6 - filled, filled: filled);
   }
 }
 
@@ -56,7 +68,7 @@ class PinPage extends StatelessWidget {
                           child: Image.asset('asset/img/deco/pin_bg.png'),
                         ),
                         Align(
-                          alignment: Alignment(0, -0.7),
+                          alignment: Alignment(0, -0.5),
                           child: Column(
                             mainAxisSize: .min,
                             children: [
@@ -104,6 +116,14 @@ class PinPage extends StatelessWidget {
                                 "Enter 6 digit pin code.",
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(letterSpacing: -0.2),
+                              ),
+                              SizedBox(height: 10),
+                              SizedBox(
+                                height: 25,
+                                child: FractionallySizedBox(
+                                  widthFactor: 0.3,
+                                  child: Expanded(child: _PinCircles()),
+                                ),
                               ),
                             ],
                           ),
@@ -249,16 +269,76 @@ class PinPage extends StatelessWidget {
   }
 }
 
+class _PinCircle extends StatelessWidget {
+  final bool filled;
+  const _PinCircle({
+    // ignore: unused_element_parameter
+    super.key,
+    filled,
+  }) : filled = filled ?? false;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return LayoutBuilder(
+      builder: (context, constraint) {
+        double heightBased = constraint.maxHeight / 2.5;
+        double widthBased = constraint.maxWidth / 6;
+        final size = min(heightBased, widthBased);
+        return SizedBox.square(
+          dimension: size,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: (filled)
+                  ? null
+                  : .all(color: theme.colorScheme.outline, width: 1.5),
+              color: (filled) ? theme.primaryColor : null,
+              shape: .circle,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PinCircles extends StatelessWidget {
+  const _PinCircles({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Assuming _PinNotifier.filledOf returns a record with {int filled, int empty}
+    var (:filled, :empty) = _PinNotifier.filledOf(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Generate 'filled' number of circles
+        ...List.generate(filled, (index) => const _PinCircle(filled: true)),
+
+        // Generate 'empty' number of circles
+        ...List.generate(empty, (index) => const _PinCircle(filled: false)),
+      ],
+    );
+  }
+}
+
 class _PinIndicator extends StatelessWidget {
-  const _PinIndicator({super.key});
+  const _PinIndicator({
+    // ignore: unused_element_parameter
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: _PinNotifier.of(context),
-      builder: (context, list, child) => CircularProgressIndicator(
-        value: _PinNotifier.alphaOf(context),
-        strokeWidth: 4,
+      builder: (context, list, child) => TweenAnimationBuilder<double>(
+        tween: Tween(end: _PinNotifier.alphaOf(context)),
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOutSine,
+        builder: (context, value, child) =>
+            CircularProgressIndicator(value: value, strokeWidth: 4),
       ),
     );
   }
@@ -268,8 +348,13 @@ class _Button extends StatelessWidget {
   final Widget? child;
   final void Function(BuildContext)? onTap;
   final TextStyle? _textStyle;
-  const _Button({super.key, this.child, TextStyle? textStyle, this.onTap})
-    : _textStyle = textStyle;
+  const _Button({
+    // ignore: unused_element_parameter
+    super.key,
+    this.child,
+    TextStyle? textStyle,
+    this.onTap,
+  }) : _textStyle = textStyle;
 
   @override
   Widget build(BuildContext context) {
