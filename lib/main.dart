@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_preintern_app/pages/main_page/main_page.dart';
 import 'package:flutter_preintern_app/pages/main_page/contact_page.dart';
 import 'package:flutter_preintern_app/pages/pin_page.dart';
-import 'package:flutter_preintern_app/shared/data/app_theme.dart';
+import 'package:flutter_preintern_app/data/app_theme.dart';
 
 void main() {
   runApp(const EmpeoApp());

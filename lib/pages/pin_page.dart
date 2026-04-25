@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_preintern_app/shared/data/app_theme.dart';
+import 'package:flutter_preintern_app/data/app_theme.dart';
 
 class _PinNotifier extends InheritedNotifier<ValueNotifier<List<int>>> {
   const _PinNotifier({
@@ -15,8 +15,10 @@ class _PinNotifier extends InheritedNotifier<ValueNotifier<List<int>>> {
     return context.getInheritedWidgetOfExactType<_PinNotifier>()!.notifier!;
   }
 
-   static ValueNotifier<List<int>> dependOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<_PinNotifier>()!.notifier!;
+  static ValueNotifier<List<int>> dependOf(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<_PinNotifier>()!
+        .notifier!;
   }
 
   static void addDigitOf(BuildContext context, int digit) {
@@ -51,7 +53,7 @@ class PinPage extends StatelessWidget {
     return _PinNotifier(
       notifier: ValueNotifier(<int>[]),
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 251, 254, 255),
+        backgroundColor: AppTheme.pinBackground,
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constrain) {
@@ -74,15 +76,15 @@ class PinPage extends StatelessWidget {
                             children: [
                               Text(
                                 "Create your PIN",
-                                style: Theme.of(context)
-                                    .extension<AppTextStyles>()!
-                                    .sectionHeader
-                                    .copyWith(fontSize: 17),
+                                style: Theme.of(
+                                  context,
+                                ).extension<AppTextStyles>()!.pinHeader,
                               ),
                               Text(
                                 "To allow secure access to app and payslip information",
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(letterSpacing: -0.2),
+                                style: Theme.of(
+                                  context,
+                                ).extension<AppTextStyles>()!.pinBody,
                               ),
                               SizedBox(height: 25),
                               SizedBox.square(
@@ -96,7 +98,7 @@ class PinPage extends StatelessWidget {
                                         child: DecoratedBox(
                                           decoration: BoxDecoration(
                                             shape: .circle,
-                                            color: Colors.white,
+                                            color: AppTheme.surface,
                                           ),
                                           child: Icon(
                                             Icons.lock,
@@ -114,15 +116,16 @@ class PinPage extends StatelessWidget {
                               SizedBox(height: 15),
                               Text(
                                 "Enter 6 digit pin code.",
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(letterSpacing: -0.2),
+                                style: Theme.of(
+                                  context,
+                                ).extension<AppTextStyles>()!.pinBody,
                               ),
                               SizedBox(height: 10),
                               SizedBox(
                                 height: 25,
                                 child: FractionallySizedBox(
                                   widthFactor: 0.3,
-                                  child: _PinCircles(),
+                                  child: Expanded(child: _PinCircles()),
                                 ),
                               ),
                             ],
@@ -338,7 +341,7 @@ class _PinIndicator extends StatelessWidget {
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeInOutSine,
         builder: (context, value, child) =>
-            CircularProgressIndicator(value: value, strokeWidth: 4),
+            CircularProgressIndicator(value: value),
       ),
     );
   }

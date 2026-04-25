@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_preintern_app/shared/component/pages/start/start_page_scaffold.dart';
-import 'package:flutter_preintern_app/shared/component/pages/start/start_primary_button.dart';
-import 'package:flutter_preintern_app/shared/component/pages/start/start_text_field.dart';
-import 'package:flutter_preintern_app/shared/data/app_theme.dart';
+import 'package:flutter_preintern_app/component/pages/start/start_page_scaffold.dart';
+import 'package:flutter_preintern_app/component/pages/start/start_primary_button.dart';
+import 'package:flutter_preintern_app/component/pages/start/start_text_field.dart';
+import 'package:flutter_preintern_app/data/app_theme.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

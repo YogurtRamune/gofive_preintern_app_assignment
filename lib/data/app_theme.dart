@@ -14,6 +14,7 @@ abstract final class AppTheme {
   static const outline = Color(0xFFE0E0E0);
   static const hint = Color(0xFFBDBDBD);
   static const icon = Color.fromARGB(255, 181, 143, 143);
+  static const pinBackground = Color.fromARGB(255, 251, 254, 255);
 
   // ── Font ─────────────────────────────────────────────────────────────────
   static const font = 'VarelaRound'; // matches the family name in pubspec.yaml
@@ -94,8 +95,12 @@ abstract final class AppTheme {
       ),
     ),
     progressIndicatorTheme: ProgressIndicatorThemeData(
-      color: Color.alphaBlend(Colors.white.withAlpha(200), HSVColor.fromColor(primary).withSaturation(1).withValue(1).toColor())
-    )
+      color: Color.alphaBlend(
+        Colors.white.withAlpha(200),
+        HSVColor.fromColor(primary).withSaturation(1).withValue(1).toColor(),
+      ),
+      strokeWidth: 4,
+    ),
   );
 }
 
@@ -109,6 +114,8 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
     required this.sectionHeader,
     required this.avatarInitial,
     required this.pinText,
+    required this.pinHeader,
+    required this.pinBody,
   });
 
   /// Bold label used for list section headers (e.g. "Own Team").
@@ -120,6 +127,10 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
   final TextStyle avatarInitial;
 
   final TextStyle pinText;
+
+  final TextStyle pinHeader;
+
+  final TextStyle pinBody;
 
   /// Default instance registered in [AppTheme.light].
   static const light = AppTextStyles(
@@ -140,6 +151,20 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
       fontWeight: FontWeight.w700,
       color: AppTheme.onSurface,
     ),
+    pinHeader: TextStyle(
+      fontFamily: AppTheme.font,
+      fontSize: 17,
+      fontWeight: FontWeight.w700,
+      color: AppTheme.onSurface,
+    ),
+    pinBody: TextStyle(
+      fontFamily: AppTheme.font,
+      fontSize: 13,
+      height: 1.55,
+      fontWeight: FontWeight.w400,
+      letterSpacing: -0.2,
+      color: AppTheme.onSurface,
+    ),
   );
 
   @override
@@ -147,10 +172,14 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
     TextStyle? sectionHeader,
     TextStyle? avatarInitial,
     TextStyle? pinText,
+    TextStyle? pinHeader,
+    TextStyle? pinBody,
   }) => AppTextStyles(
     sectionHeader: sectionHeader ?? this.sectionHeader,
     avatarInitial: avatarInitial ?? this.avatarInitial,
     pinText: pinText ?? this.pinText,
+    pinHeader: pinHeader ?? this.pinHeader,
+    pinBody: pinBody ?? this.pinBody,
   );
 
   @override
@@ -160,6 +189,8 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
       sectionHeader: TextStyle.lerp(sectionHeader, other.sectionHeader, t)!,
       avatarInitial: TextStyle.lerp(avatarInitial, other.avatarInitial, t)!,
       pinText: TextStyle.lerp(pinText, other.pinText, t)!,
+      pinHeader: TextStyle.lerp(pinHeader, other.pinHeader, t)!,
+      pinBody: TextStyle.lerp(pinBody, other.pinBody, t)!,
     );
   }
 }

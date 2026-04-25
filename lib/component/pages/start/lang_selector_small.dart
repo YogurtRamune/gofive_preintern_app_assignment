@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_preintern_app/shared/data/app_theme.dart';
-import 'package:flutter_preintern_app/shared/data/language_enum.dart';
+import 'package:flutter_preintern_app/data/app_theme.dart';
+import 'package:flutter_preintern_app/data/language_enum.dart';
 
 class LangSelectorSmall extends StatelessWidget {
   final LanguageEnum? lang;
