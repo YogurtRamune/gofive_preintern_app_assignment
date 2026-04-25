@@ -102,8 +102,8 @@ abstract final class AppTheme {
 /// Custom text styles that don't belong in Flutter's standard [TextTheme].
 ///
 /// Access via:
-///   Theme.of(context).extension<AppTextStyles>()!.sectionHeader
-///   Theme.of(context).extension<AppTextStyles>()!.avatarInitial
+///   `Theme.of(context).extension<AppTextStyles>()!.sectionHeader`
+///   `Theme.of(context).extension<AppTextStyles>()!.avatarInitial`
 class AppTextStyles extends ThemeExtension<AppTextStyles> {
   const AppTextStyles({
     required this.sectionHeader,
