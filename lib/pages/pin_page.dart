@@ -1,110 +1,264 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_preintern_app/shared/data/app_theme.dart';
 
+class _PinNotifier extends InheritedNotifier<ValueNotifier<List<int>>> {
+  const _PinNotifier({
+    super.key,
+    required super.notifier,
+    required super.child,
+  });
+
+  static ValueNotifier<List<int>> of(BuildContext context) {
+    return context.getInheritedWidgetOfExactType<_PinNotifier>()!.notifier!;
+  }
+
+  static void addDigitOf(BuildContext context, int digit) {
+    final notifier = of(context);
+    if (notifier.value.length < 6) {
+      notifier.value = [...notifier.value, digit];
+    }
+  }
+
+  static void deleteDigitOf(BuildContext context) {
+    final notifier = of(context);
+    if (notifier.value.isNotEmpty) {
+      notifier.value = notifier.value.sublist(0, notifier.value.length - 1);
+    }
+  }
+
+  static double alphaOf(BuildContext context) {
+    return of(context).value.length / 6.0;
+  }
+}
+
 class PinPage extends StatelessWidget {
   const PinPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 251, 254, 255),
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constrain) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Image.asset('asset/img/deco/pin_bg.png'),
-                SizedBox(
-                  height: constrain.maxHeight / 3,
-                  child: ColoredBox(
-                    color: Theme.of(context).colorScheme.surface,
-                    child: Row(
+    return _PinNotifier(
+      notifier: ValueNotifier(<int>[]),
+      child: Scaffold(
+        backgroundColor: Color.fromARGB(255, 251, 254, 255),
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constrain) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Stack(
                       children: [
-                        Flexible(flex: 1, child: SizedBox.expand()),
-                        Flexible(
-                          flex: 3,
-                          child: Column(
-                            children: [
-                              Flexible(flex: 1, child: SizedBox.expand()),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(child: Text('1')),
-                              ),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(child: Text('4')),
-                              ),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(child: Text('7')),
-                              ),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(child: SizedBox.shrink()),
-                              ),
-                            ],
-                          ),
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Image.asset('asset/img/deco/pin_bg.png'),
                         ),
-                        Flexible(
-                          flex: 3,
+                        Align(
+                          alignment: Alignment(0, -0.7),
                           child: Column(
+                            mainAxisSize: .min,
                             children: [
-                              Flexible(flex: 1, child: SizedBox.expand()),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(child: Text('2')),
+                              Text(
+                                "Create your PIN",
+                                style: Theme.of(context)
+                                    .extension<AppTextStyles>()!
+                                    .sectionHeader
+                                    .copyWith(fontSize: 17),
                               ),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(child: Text('5')),
+                              Text(
+                                "To allow secure access to app and payslip information",
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(letterSpacing: -0.2),
                               ),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(child: Text('8')),
-                              ),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(child: Text('0')),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Flexible(
-                          flex: 3,
-                          child: Column(
-                            children: [
-                              Flexible(flex: 1, child: SizedBox.expand()),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(child: Text('3')),
-                              ),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(child: Text('6')),
-                              ),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(child: Text('9')),
-                              ),
-                              Flexible(
-                                flex: 10,
-                                child: _Button(
-                                  child: Icon(Icons.backspace_outlined),
+                              SizedBox(height: 25),
+                              SizedBox.square(
+                                dimension: 80,
+                                child: Stack(
+                                  children: [
+                                    SizedBox.expand(child: _PinIndicator()),
+                                    SizedBox.expand(
+                                      child: Padding(
+                                        padding: .all(2),
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            shape: .circle,
+                                            color: Colors.white,
+                                          ),
+                                          child: Icon(
+                                            Icons.lock,
+                                            color: Theme.of(
+                                              context,
+                                            ).primaryColor,
+                                            size: 35,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
+                              SizedBox(height: 15),
+                              Text(
+                                "Enter 6 digit pin code.",
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(letterSpacing: -0.2),
+                              ),
                             ],
                           ),
                         ),
-                        Flexible(flex: 1, child: SizedBox.expand()),
                       ],
                     ),
                   ),
-                ),
-              ],
-            );
-          },
+                  SizedBox(
+                    height: constrain.maxHeight / 3,
+                    child: ColoredBox(
+                      color: Theme.of(context).colorScheme.surface,
+                      child: Row(
+                        children: [
+                          Flexible(flex: 1, child: SizedBox.expand()),
+                          Flexible(
+                            flex: 3,
+                            child: Column(
+                              children: [
+                                Flexible(flex: 1, child: SizedBox.expand()),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(
+                                    child: Text('1'),
+                                    onTap: (ctx) =>
+                                        _PinNotifier.addDigitOf(ctx, 1),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(
+                                    child: Text('4'),
+                                    onTap: (ctx) =>
+                                        _PinNotifier.addDigitOf(ctx, 4),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(
+                                    child: Text('7'),
+                                    onTap: (ctx) =>
+                                        _PinNotifier.addDigitOf(ctx, 7),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(child: SizedBox.shrink()),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Flexible(
+                            flex: 3,
+                            child: Column(
+                              children: [
+                                Flexible(flex: 1, child: SizedBox.expand()),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(
+                                    child: Text('2'),
+                                    onTap: (ctx) =>
+                                        _PinNotifier.addDigitOf(ctx, 2),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(
+                                    child: Text('5'),
+                                    onTap: (ctx) =>
+                                        _PinNotifier.addDigitOf(ctx, 5),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(
+                                    child: Text('8'),
+                                    onTap: (ctx) =>
+                                        _PinNotifier.addDigitOf(ctx, 8),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(
+                                    child: Text('0'),
+                                    onTap: (ctx) =>
+                                        _PinNotifier.addDigitOf(ctx, 0),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Flexible(
+                            flex: 3,
+                            child: Column(
+                              children: [
+                                Flexible(flex: 1, child: SizedBox.expand()),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(
+                                    child: Text('3'),
+                                    onTap: (ctx) =>
+                                        _PinNotifier.addDigitOf(ctx, 3),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(
+                                    child: Text('6'),
+                                    onTap: (ctx) =>
+                                        _PinNotifier.addDigitOf(ctx, 6),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(
+                                    child: Text('9'),
+                                    onTap: (ctx) =>
+                                        _PinNotifier.addDigitOf(ctx, 9),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 10,
+                                  child: _Button(
+                                    child: Icon(Icons.backspace_outlined),
+                                    onTap: (ctx) =>
+                                        _PinNotifier.deleteDigitOf(ctx),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Flexible(flex: 1, child: SizedBox.expand()),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _PinIndicator extends StatelessWidget {
+  const _PinIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: _PinNotifier.of(context),
+      builder: (context, list, child) => CircularProgressIndicator(
+        value: _PinNotifier.alphaOf(context),
+        strokeWidth: 4,
       ),
     );
   }
@@ -112,7 +266,7 @@ class PinPage extends StatelessWidget {
 
 class _Button extends StatelessWidget {
   final Widget? child;
-  final void Function()? onTap;
+  final void Function(BuildContext)? onTap;
   final TextStyle? _textStyle;
   const _Button({super.key, this.child, TextStyle? textStyle, this.onTap})
     : _textStyle = textStyle;
@@ -123,21 +277,23 @@ class _Button extends StatelessWidget {
     final TextStyle textStyle =
         _textStyle ?? Theme.of(context).extension<AppTextStyles>()!.pinText;
 
-    return InkWell(
-      onTap: onTap,
-      child: Center(
-        child: FractionallySizedBox(
-          widthFactor: 0.5,
-          heightFactor: 0.5,
-          child: Center(
-            child: DefaultTextStyle.merge(
-              style: textStyle,
-              child: IconTheme.merge(
-                data: IconThemeData(
-                  color: textStyle.color,
-                  size: textStyle.fontSize,
+    return Material(
+      child: InkWell(
+        onTap: () => onTap?.call(context),
+        child: Center(
+          child: FractionallySizedBox(
+            widthFactor: 0.5,
+            heightFactor: 0.5,
+            child: Center(
+              child: DefaultTextStyle.merge(
+                style: textStyle,
+                child: IconTheme.merge(
+                  data: IconThemeData(
+                    color: textStyle.color,
+                    size: textStyle.fontSize,
+                  ),
+                  child: child!,
                 ),
-                child: child!,
               ),
             ),
           ),

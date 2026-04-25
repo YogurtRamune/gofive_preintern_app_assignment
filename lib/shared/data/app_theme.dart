@@ -93,6 +93,9 @@ abstract final class AppTheme {
         ),
       ),
     ),
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      color: Color.alphaBlend(Colors.white.withAlpha(200), HSVColor.fromColor(primary).withSaturation(1).withValue(1).toColor())
+    )
   );
 }
 
