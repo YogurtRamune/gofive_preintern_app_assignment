@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   adaptive_theme: ^3.7.2
+  jiffy: ^6.4.4
+  flutter_bloc: ^9.1.1
 
 dev_dependencies:
   flutter_test:
@@ -29,3 +31,16 @@ flutter:
     - family: VarelaRound
       fonts:
         - asset: asset/font/Varela_Round/VarelaRound-Regular.ttf
+    - family: Mitr
+      fonts:
+        - asset: asset/font/Mitr/Mitr-Regular.ttf
+        - asset: asset/font/Mitr/Mitr-ExtraLight.ttf
+          weight: 200
+        - asset: asset/font/Mitr/Mitr-Light.ttf
+          weight: 300
+        - asset: asset/font/Mitr/Mitr-Medium.ttf
+          weight: 500
+        - asset: asset/font/Mitr/Mitr-SemiBold.ttf
+          weight: 600
+        - asset: asset/font/Mitr/Mitr-Bold.ttf
+          weight: 700

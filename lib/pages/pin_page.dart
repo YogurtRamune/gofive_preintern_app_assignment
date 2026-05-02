@@ -1,59 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_preintern_app/data/app_theme.dart';
-
-class _PinNotifier extends InheritedNotifier<ValueNotifier<List<int>>> {
-  const _PinNotifier({
-    // ignore: unused_element_parameter
-    super.key,
-    required super.notifier,
-    required super.child,
-  });
-
-  static ValueNotifier<List<int>> of(BuildContext context) {
-    return context.getInheritedWidgetOfExactType<_PinNotifier>()!.notifier!;
-  }
-
-  static ValueNotifier<List<int>> dependOf(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<_PinNotifier>()!
-        .notifier!;
-  }
-
-  static void addDigitOf(BuildContext context, int digit) {
-    final notifier = of(context);
-    if (notifier.value.length < 6) {
-      notifier.value = [...notifier.value, digit];
-    }
-  }
-
-  static void deleteDigitOf(BuildContext context) {
-    final notifier = of(context);
-    if (notifier.value.isNotEmpty) {
-      notifier.value = notifier.value.sublist(0, notifier.value.length - 1);
-    }
-  }
-
-  static double alphaOf(BuildContext context) {
-    return of(context).value.length / 6.0;
-  }
-
-  static ({int filled, int empty}) filledOf(BuildContext context) {
-    int filled = dependOf(context).value.length;
-    return (empty: 6 - filled, filled: filled);
-  }
-}
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_preintern_app/bloc/pin_bloc.dart';
+import 'package:flutter_preintern_app/core/app_theme.dart';
 
 class PinPage extends StatelessWidget {
   const PinPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return _PinNotifier(
-      notifier: ValueNotifier(<int>[]),
+    return BlocProvider(
+      create: (_) => PinBloc(),
       child: Scaffold(
-        backgroundColor: AppTheme.pinBackground,
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constrain) {
@@ -100,12 +59,15 @@ class PinPage extends StatelessWidget {
                                             shape: .circle,
                                             color: AppTheme.surface,
                                           ),
-                                          child: Icon(
-                                            Icons.lock,
-                                            color: Theme.of(
-                                              context,
-                                            ).primaryColor,
-                                            size: 35,
+                                          child: Center(
+                                            child: Image.asset(
+                                              'asset/img/icon/lock.png',
+                                              fit: .contain,
+                                              isAntiAlias: true,
+                                              filterQuality: .high,
+                                              width: 35,
+                                              height: 35,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -120,11 +82,11 @@ class PinPage extends StatelessWidget {
                                   context,
                                 ).extension<AppTextStyles>()!.pinBody,
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 7),
                               SizedBox(
                                 height: 25,
                                 child: FractionallySizedBox(
-                                  widthFactor: 0.3,
+                                  widthFactor: 0.27,
                                   child: Expanded(child: _PinCircles()),
                                 ),
                               ),
@@ -150,24 +112,27 @@ class PinPage extends StatelessWidget {
                                   flex: 10,
                                   child: _Button(
                                     child: Text('1'),
-                                    onTap: (ctx) =>
-                                        _PinNotifier.addDigitOf(ctx, 1),
+                                    onTap: (ctx) => ctx.read<PinBloc>().add(
+                                      PinDigitAdded(1),
+                                    ),
                                   ),
                                 ),
                                 Flexible(
                                   flex: 10,
                                   child: _Button(
                                     child: Text('4'),
-                                    onTap: (ctx) =>
-                                        _PinNotifier.addDigitOf(ctx, 4),
+                                    onTap: (ctx) => ctx.read<PinBloc>().add(
+                                      PinDigitAdded(4),
+                                    ),
                                   ),
                                 ),
                                 Flexible(
                                   flex: 10,
                                   child: _Button(
                                     child: Text('7'),
-                                    onTap: (ctx) =>
-                                        _PinNotifier.addDigitOf(ctx, 7),
+                                    onTap: (ctx) => ctx.read<PinBloc>().add(
+                                      PinDigitAdded(7),
+                                    ),
                                   ),
                                 ),
                                 Flexible(
@@ -186,32 +151,36 @@ class PinPage extends StatelessWidget {
                                   flex: 10,
                                   child: _Button(
                                     child: Text('2'),
-                                    onTap: (ctx) =>
-                                        _PinNotifier.addDigitOf(ctx, 2),
+                                    onTap: (ctx) => ctx.read<PinBloc>().add(
+                                      PinDigitAdded(2),
+                                    ),
                                   ),
                                 ),
                                 Flexible(
                                   flex: 10,
                                   child: _Button(
                                     child: Text('5'),
-                                    onTap: (ctx) =>
-                                        _PinNotifier.addDigitOf(ctx, 5),
+                                    onTap: (ctx) => ctx.read<PinBloc>().add(
+                                      PinDigitAdded(5),
+                                    ),
                                   ),
                                 ),
                                 Flexible(
                                   flex: 10,
                                   child: _Button(
                                     child: Text('8'),
-                                    onTap: (ctx) =>
-                                        _PinNotifier.addDigitOf(ctx, 8),
+                                    onTap: (ctx) => ctx.read<PinBloc>().add(
+                                      PinDigitAdded(8),
+                                    ),
                                   ),
                                 ),
                                 Flexible(
                                   flex: 10,
                                   child: _Button(
                                     child: Text('0'),
-                                    onTap: (ctx) =>
-                                        _PinNotifier.addDigitOf(ctx, 0),
+                                    onTap: (ctx) => ctx.read<PinBloc>().add(
+                                      PinDigitAdded(0),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -226,32 +195,36 @@ class PinPage extends StatelessWidget {
                                   flex: 10,
                                   child: _Button(
                                     child: Text('3'),
-                                    onTap: (ctx) =>
-                                        _PinNotifier.addDigitOf(ctx, 3),
+                                    onTap: (ctx) => ctx.read<PinBloc>().add(
+                                      PinDigitAdded(3),
+                                    ),
                                   ),
                                 ),
                                 Flexible(
                                   flex: 10,
                                   child: _Button(
                                     child: Text('6'),
-                                    onTap: (ctx) =>
-                                        _PinNotifier.addDigitOf(ctx, 6),
+                                    onTap: (ctx) => ctx.read<PinBloc>().add(
+                                      PinDigitAdded(6),
+                                    ),
                                   ),
                                 ),
                                 Flexible(
                                   flex: 10,
                                   child: _Button(
                                     child: Text('9'),
-                                    onTap: (ctx) =>
-                                        _PinNotifier.addDigitOf(ctx, 9),
+                                    onTap: (ctx) => ctx.read<PinBloc>().add(
+                                      PinDigitAdded(9),
+                                    ),
                                   ),
                                 ),
                                 Flexible(
                                   flex: 10,
                                   child: _Button(
                                     child: Icon(Icons.backspace_outlined),
-                                    onTap: (ctx) =>
-                                        _PinNotifier.deleteDigitOf(ctx),
+                                    onTap: (ctx) => ctx.read<PinBloc>().add(
+                                      PinDigitDeleted(),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -306,21 +279,23 @@ class _PinCircle extends StatelessWidget {
 }
 
 class _PinCircles extends StatelessWidget {
-  const _PinCircles({super.key});
+  const _PinCircles();
 
   @override
   Widget build(BuildContext context) {
-    // Assuming _PinNotifier.filledOf returns a record with {int filled, int empty}
-    var (:filled, :empty) = _PinNotifier.filledOf(context);
+    final state = context.watch<PinBloc>().state;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Generate 'filled' number of circles
-        ...List.generate(filled, (index) => const _PinCircle(filled: true)),
-
-        // Generate 'empty' number of circles
-        ...List.generate(empty, (index) => const _PinCircle(filled: false)),
+        ...List.generate(
+          state.filledCount,
+          (index) => const _PinCircle(filled: true),
+        ),
+        ...List.generate(
+          state.emptyCount,
+          (index) => const _PinCircle(filled: false),
+        ),
       ],
     );
   }
@@ -334,10 +309,9 @@ class _PinIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: _PinNotifier.of(context),
-      builder: (context, list, child) => TweenAnimationBuilder<double>(
-        tween: Tween(end: _PinNotifier.alphaOf(context)),
+    return BlocBuilder<PinBloc, PinState>(
+      builder: (context, state) => TweenAnimationBuilder<double>(
+        tween: Tween(end: state.alpha),
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeInOutSine,
         builder: (context, value, child) =>
@@ -363,7 +337,7 @@ class _Button extends StatelessWidget {
   Widget build(BuildContext context) {
     if (child == null) return const Placeholder();
     final TextStyle textStyle =
-        _textStyle ?? Theme.of(context).extension<AppTextStyles>()!.pinText;
+        _textStyle ?? Theme.of(context).extension<AppTextStyles>()!.pinNumber;
 
     return Material(
       child: InkWell(

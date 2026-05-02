@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_preintern_app/pages/main_page/calendar_page.dart';
 import 'package:flutter_preintern_app/pages/main_page/contact_page.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+
+  final Widget initPage;
+  const MainPage({super.key, this.initPage = const ContactPage()});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -10,7 +13,13 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
-  Widget currentPage = ContactPage();
+  late Widget currentPage;
+
+  @override
+  void initState() {
+    currentPage = widget.initPage;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +27,7 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: _ButtonNav(
         onTap: (w) => setState(() => currentPage = w),
         contact: ContactPage(),
+        calendar: CalendarPage(),
       ), 
       body: currentPage,
     );

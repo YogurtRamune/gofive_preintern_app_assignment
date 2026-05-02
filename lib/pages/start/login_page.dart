@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_preintern_app/component/help_button.dart';
 import 'package:flutter_preintern_app/component/pages/start/start_page_scaffold.dart';
 import 'package:flutter_preintern_app/component/pages/start/start_primary_button.dart';
 import 'package:flutter_preintern_app/component/pages/start/start_text_field.dart';
-import 'package:flutter_preintern_app/data/app_theme.dart';
+import 'package:flutter_preintern_app/core/app_theme.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -53,8 +54,14 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    ColorScheme scheme = ColorScheme.of(context);
     return StartPageScaffold(
-      additionalAction: _HelpButton(),
+      additionalAction: HelpButton(
+        color: scheme.primary,
+        borderColor: Colors.transparent,
+        borderWidth: 0,
+        iconColor: scheme.surface
+      ),
       footer: const _FooterText(),
       children: [
         StartTextField(
@@ -88,6 +95,7 @@ class _LoginPageState extends State<LoginPage> {
             onPressed: _onForgotPassword,
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
+              textStyle: TextStyle(fontWeight: .w500, letterSpacing: -0.2, fontSize: 13)
             ),
             child: const Text('Forgot password?'),
           ),
@@ -112,33 +120,6 @@ class _LoginPageState extends State<LoginPage> {
           child: const Text('Sign in without email'),
         ),
       ],
-    );
-  }
-}
-
-class _HelpButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    const double size = 25;
-    return GestureDetector(
-      onTap: () {
-        // TODO: Show help / support
-        debugPrint('Help tapped');
-      },
-      child: Container(
-        width: size,
-        height: size,
-        decoration: const BoxDecoration(
-          color: AppTheme.primary,
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.question_mark_rounded,
-          color: Colors.white,
-          size: size - 5,
-          fontWeight: .w900,
-        ),
-      ),
     );
   }
 }
