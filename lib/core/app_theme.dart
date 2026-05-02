@@ -15,6 +15,8 @@ abstract final class AppTheme {
   static const hint = Color(0xFFBDBDBD);
   static const icon = Color.fromARGB(255, 181, 143, 143);
 
+  static const pinBackground = Color.fromARGB(255, 247, 254, 253);
+
   // ── Font ─────────────────────────────────────────────────────────────────
   static const font = 'VarelaRound';
   static const fontFallback = ['Mitr'];

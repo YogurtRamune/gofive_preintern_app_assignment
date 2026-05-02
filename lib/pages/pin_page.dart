@@ -8,11 +8,67 @@ import 'package:flutter_preintern_app/core/app_theme.dart';
 class PinPage extends StatelessWidget {
   const PinPage({super.key});
 
+  Widget _buildDigitButton(int digit) {
+    return BlocBuilder<PinBloc, PinState>(
+      builder: (context, _) => _Button(
+        child: Text('$digit'),
+        onTap: (ctx) => ctx.read<PinBloc>().add(PinDigitAdded(digit)),
+      ),
+    );
+  }
+
+  Widget _buildBackspaceButton() {
+    return BlocBuilder<PinBloc, PinState>(
+      builder: (context, _) => _Button(
+        child: const Icon(Icons.backspace_outlined),
+        onTap: (ctx) => ctx.read<PinBloc>().add(PinDigitDeleted()),
+      ),
+    );
+  }
+
+  Widget _buildEmptyButton() => const _Button(child: SizedBox.shrink());
+
+  Widget _buildNumpad() {
+    final columns = [
+      [1, 4, 7, null], // null = empty placeholder
+      [2, 5, 8, 0],
+      [3, 6, 9, -1], // -1 = backspace
+    ];
+
+    return Row(
+      children: [
+        Flexible(flex: 1, child: SizedBox.expand()),
+        ...columns.map(
+          (col) => Flexible(
+            flex: 3,
+            child: Column(
+              children: [
+                Flexible(flex: 1, child: SizedBox.expand()),
+                ...col.map(
+                  (digit) => Flexible(
+                    flex: 10,
+                    child: switch (digit) {
+                      null => _buildEmptyButton(),
+                      -1 => _buildBackspaceButton(),
+                      _ => _buildDigitButton(digit),
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Flexible(flex: 1, child: SizedBox.expand()),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => PinBloc(),
       child: Scaffold(
+        backgroundColor: AppTheme.pinBackground,
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constrain) {
@@ -31,7 +87,7 @@ class PinPage extends StatelessWidget {
                         Align(
                           alignment: Alignment(0, -0.5),
                           child: Column(
-                            mainAxisSize: .min,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 "Create your PIN",
@@ -53,18 +109,18 @@ class PinPage extends StatelessWidget {
                                     SizedBox.expand(child: _PinIndicator()),
                                     SizedBox.expand(
                                       child: Padding(
-                                        padding: .all(2),
+                                        padding: EdgeInsets.all(2),
                                         child: DecoratedBox(
                                           decoration: BoxDecoration(
-                                            shape: .circle,
+                                            shape: BoxShape.circle,
                                             color: AppTheme.surface,
                                           ),
                                           child: Center(
                                             child: Image.asset(
                                               'asset/img/icon/lock.png',
-                                              fit: .contain,
+                                              fit: BoxFit.contain,
                                               isAntiAlias: true,
-                                              filterQuality: .high,
+                                              filterQuality: FilterQuality.high,
                                               width: 35,
                                               height: 35,
                                             ),
@@ -100,139 +156,7 @@ class PinPage extends StatelessWidget {
                     height: constrain.maxHeight / 3,
                     child: ColoredBox(
                       color: Theme.of(context).colorScheme.surface,
-                      child: Row(
-                        children: [
-                          Flexible(flex: 1, child: SizedBox.expand()),
-                          Flexible(
-                            flex: 3,
-                            child: Column(
-                              children: [
-                                Flexible(flex: 1, child: SizedBox.expand()),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(
-                                    child: Text('1'),
-                                    onTap: (ctx) => ctx.read<PinBloc>().add(
-                                      PinDigitAdded(1),
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(
-                                    child: Text('4'),
-                                    onTap: (ctx) => ctx.read<PinBloc>().add(
-                                      PinDigitAdded(4),
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(
-                                    child: Text('7'),
-                                    onTap: (ctx) => ctx.read<PinBloc>().add(
-                                      PinDigitAdded(7),
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(child: SizedBox.shrink()),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Flexible(
-                            flex: 3,
-                            child: Column(
-                              children: [
-                                Flexible(flex: 1, child: SizedBox.expand()),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(
-                                    child: Text('2'),
-                                    onTap: (ctx) => ctx.read<PinBloc>().add(
-                                      PinDigitAdded(2),
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(
-                                    child: Text('5'),
-                                    onTap: (ctx) => ctx.read<PinBloc>().add(
-                                      PinDigitAdded(5),
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(
-                                    child: Text('8'),
-                                    onTap: (ctx) => ctx.read<PinBloc>().add(
-                                      PinDigitAdded(8),
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(
-                                    child: Text('0'),
-                                    onTap: (ctx) => ctx.read<PinBloc>().add(
-                                      PinDigitAdded(0),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Flexible(
-                            flex: 3,
-                            child: Column(
-                              children: [
-                                Flexible(flex: 1, child: SizedBox.expand()),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(
-                                    child: Text('3'),
-                                    onTap: (ctx) => ctx.read<PinBloc>().add(
-                                      PinDigitAdded(3),
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(
-                                    child: Text('6'),
-                                    onTap: (ctx) => ctx.read<PinBloc>().add(
-                                      PinDigitAdded(6),
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(
-                                    child: Text('9'),
-                                    onTap: (ctx) => ctx.read<PinBloc>().add(
-                                      PinDigitAdded(9),
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 10,
-                                  child: _Button(
-                                    child: Icon(Icons.backspace_outlined),
-                                    onTap: (ctx) => ctx.read<PinBloc>().add(
-                                      PinDigitDeleted(),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Flexible(flex: 1, child: SizedBox.expand()),
-                        ],
-                      ),
+                      child: _buildNumpad(),
                     ),
                   ),
                 ],
@@ -267,9 +191,9 @@ class _PinCircle extends StatelessWidget {
             decoration: BoxDecoration(
               border: (filled)
                   ? null
-                  : .all(color: theme.colorScheme.outline, width: 1.5),
+                  : Border.all(color: theme.colorScheme.outline, width: 1.5),
               color: (filled) ? theme.primaryColor : null,
-              shape: .circle,
+              shape: BoxShape.circle,
             ),
           ),
         );
