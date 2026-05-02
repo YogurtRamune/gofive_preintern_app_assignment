@@ -26,65 +26,85 @@ class CalendarPage extends StatelessWidget {
                 Flexible(flex: 3, child: SizedBox.expand()),
               ],
             ),
-            LayoutBuilder(
-              builder: (context, constraint) {
-                final double sheetMinSize = (constraint.maxHeight - _Header.height) * (3/13) / constraint.maxHeight;
-                const double sheetMaxSize = 0.8;
-                return DraggableScrollableSheet(
-                  initialChildSize: sheetMinSize,
-                  minChildSize: sheetMinSize,
-                  maxChildSize: sheetMaxSize,
-                  snap: true,
-                  snapSizes: [sheetMinSize, sheetMaxSize],
-                  builder: (context, scrollController) {
-                    return DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(16),
-                        ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 8,
-                            offset: Offset(0, -2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          // Drag handle
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Container(
-                              width: 36,
-                              height: 4,
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withOpacity(0.3),
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
-                          ),
-                          // Scrollable content area
-                          Expanded(
-                            child: ListView(
-                              controller: scrollController,
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              children: const [],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              }
-            ),
+            Positioned.fill(child: _BottomSheet()),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _BottomSheet extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraint) {
+        final double sheetMinSize =
+            (constraint.maxHeight - _Header.height) *
+                (3 / 13) /
+                constraint.maxHeight -
+            (7 / constraint.maxHeight);
+        const double sheetMaxSize = 0.85;
+
+        return DraggableScrollableSheet(
+          initialChildSize: sheetMinSize,
+          minChildSize: sheetMinSize,
+          maxChildSize: sheetMaxSize,
+          snap: true,
+          snapSizes: [sheetMinSize, sheetMaxSize],
+          builder: (context, scrollController) {
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                border: Border(
+                  top: BorderSide(color: Theme.of(context).colorScheme.outline),
+                ),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    spreadRadius: 10,
+                    offset: Offset(0, 0),
+                  ),
+                ],
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      padding: .only(top: 20.0),
+                      itemBuilder: (context, index) {
+                        return Text('${index}th meow');
+                      },
+                    ),
+                  ),
+                  IgnorePointer(
+                    child: Align(
+                      alignment: .topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 5.0, bottom: 15.0),
+                        child: SizedBox(
+                          height: 5,
+                          child: FractionallySizedBox(
+                            widthFactor: 0.15,
+                            child: DecoratedBox(
+                              decoration: ShapeDecoration(
+                                color: Theme.of(context).colorScheme.outline,
+                                shape: const StadiumBorder(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -98,42 +118,48 @@ class _Body extends StatelessWidget {
           height: 20,
           child: Row(
             children: [
-              Expanded(child: Center(child: Text("จ"))),
-              Expanded(child: Center(child: Text("อ"))),
-              Expanded(child: Center(child: Text("พ"))),
-              Expanded(child: Center(child: Text("พฤ"))),
-              Expanded(child: Center(child: Text("ศ"))),
-              Expanded(child: Center(child: Text("ส"))),
-              Expanded(child: Center(child: Text("อา"))),
-            ],
+              "จ",
+              "อ",
+              "พ",
+              "พฤ",
+              "ศ",
+              "ส",
+              "อา",
+            ].map((day) => Expanded(child: Center(child: Text(day)))).toList(),
           ),
         ),
         SizedBox(height: 10),
         Expanded(
-          child: BlocBuilder<CalendarBloc, CalendarState>(
-            buildWhen: (previous, current) => previous.isDiffMonth(current),
-            builder: (context, state) {
-              const ncol = 7;
-              const nrow = 6;
-              return Column(
-                mainAxisSize: MainAxisSize.max,
-                children: List<Expanded>.generate(nrow, (row) {
-                  return Expanded(
-                    child: Row(
-                      children: List<Widget>.generate(ncol, (col) {
-                        // debugPrint('$row, $col, ${row * ncol + col}');
-                        final (date, place) = state.dateAtIndex(
-                          (row * ncol) + col,
-                        );
-                        return Expanded(
-                          child: DateCell(date: date, place: place),
-                        );
-                      }),
-                    ),
-                  );
-                }),
-              );
-            },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: BlocBuilder<CalendarBloc, CalendarState>(
+              buildWhen: (previous, current) => previous.isDiffMonth(current),
+              builder: (context, state) {
+                const ncol = 7;
+                const nrow = 6;
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: List<Expanded>.generate(nrow, (row) {
+                    return Expanded(
+                      child: Row(
+                        children: List<Widget>.generate(ncol, (col) {
+                          // debugPrint('$row, $col, ${row * ncol + col}');
+                          final (date, place) = state.dateAtIndex(
+                            (row * ncol) + col,
+                          );
+                          return Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: DateCell(date: date, place: place),
+                            ),
+                          );
+                        }),
+                      ),
+                    );
+                  }),
+                );
+              },
+            ),
           ),
         ),
       ],
@@ -153,11 +179,19 @@ class DateCell extends StatelessWidget {
     // return Container(
     //   color: (row+col)%2==0 ? Colors.blue : Colors.orange
     // );
-    return ColoredBox(
-      color: ((date.millisecondsSinceEpoch) / 86400000).floor() % 2 == 0
-          ? Colors.blue
-          : Colors.orange,
-      child: Center(child: Text('$place ${date.date}')),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: ((date.millisecondsSinceEpoch) / 86400000).floor() % 2 == 0
+            ? Colors.blue
+            : Colors.orange,
+        borderRadius: .circular(3),
+      ),
+      child: Center(
+        child: Text(
+          '$place ${date.date}',
+          style: TextTheme.of(context).labelSmall,
+        ),
+      ),
     );
   }
 }

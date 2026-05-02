@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_preintern_app/core/mock/contact_data.dart';
+import 'package:flutter_preintern_app/mock/contact_data.dart';
 import 'package:flutter_preintern_app/core/app_theme.dart';
 
 class ContactPage extends StatefulWidget {

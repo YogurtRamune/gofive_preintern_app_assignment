@@ -120,7 +120,7 @@ class PinPage extends StatelessWidget {
                                               'asset/img/icon/lock.png',
                                               fit: BoxFit.contain,
                                               isAntiAlias: true,
-                                              filterQuality: FilterQuality.high,
+                                              filterQuality: .high,
                                               width: 35,
                                               height: 35,
                                             ),
