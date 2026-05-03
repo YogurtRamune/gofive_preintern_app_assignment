@@ -68,35 +68,20 @@ class _BottomSheet extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: ListView.builder(
-                      controller: scrollController,
-                      padding: .only(top: 20.0),
-                      itemBuilder: (context, index) {
-                        return Text('${index}th meow');
-                      },
-                    ),
-                  ),
-                  IgnorePointer(
-                    child: Align(
-                      alignment: .topCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 5.0, bottom: 15.0),
-                        child: SizedBox(
-                          height: 5,
-                          child: FractionallySizedBox(
-                            widthFactor: 0.15,
-                            child: DecoratedBox(
-                              decoration: ShapeDecoration(
-                                color: Theme.of(context).colorScheme.outline,
-                                shape: const StadiumBorder(),
-                              ),
-                            ),
-                          ),
-                        ),
+              child: CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  // ── Pinned header that doubles as the drag handle ─────────
+                  _BottomSheetHandle(),
+                  SliverFixedExtentList(
+                    itemExtent: 56,
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => ListTile(
+                        leading: const Icon(Icons.event),
+                        title: Text('Event $index'),
+                        subtitle: Text('Description for event $index'),
                       ),
+                      childCount: 20,
                     ),
                   ),
                 ],
@@ -105,6 +90,47 @@ class _BottomSheet extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+class _BottomSheetHandle extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      pinned: true,
+      automaticallyImplyLeading: false,
+      backgroundColor: Theme.of(
+        context,
+      ).colorScheme.surfaceContainerHighest,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      toolbarHeight: 20,
+      expandedHeight: 20,
+      collapsedHeight: 20,
+      flexibleSpace: Stack(
+        children: [
+          Align(
+            alignment: .topCenter,
+            child: Padding(
+              padding: .only(top: 5),
+              child: SizedBox(
+                height: 5,
+                child: FractionallySizedBox(
+                  widthFactor: 0.15,
+                  child: DecoratedBox(
+                    decoration: ShapeDecoration(
+                      shape: StadiumBorder(),
+                      color: ColorScheme.of(context).outline,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
