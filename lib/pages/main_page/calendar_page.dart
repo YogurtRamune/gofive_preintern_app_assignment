@@ -201,7 +201,7 @@ class _Body extends StatelessWidget {
                             return Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(3),
-                                child: _DateCell(date: date, place: place),
+                                child: _DateCell(date: date, place: place, selected: true,),
                               ),
                             );
                           }),
@@ -221,12 +221,20 @@ class _Body extends StatelessWidget {
 
 class _DateCell extends StatelessWidget {
   final Jiffy date;
+  final bool selected;
   final int place;
 
-  const _DateCell({super.key, required this.date, required this.place})
-    : assert(-1 <= place && place <= 1);
+  const _DateCell({
+    required this.date,
+    required this.place,
+    this.selected = false,
+  }) : assert(-1 <= place && place <= 1);
 
-  static Color textColorPreferSurface(Color baseColor, BuildContext ctx) {
+  static Color contrastColorPrefer(
+    Color baseColor,
+    BuildContext ctx, [
+    bool flip = false,
+  ]) {
     final Color surface = ColorScheme.of(ctx).surface;
     final Color onSurface = ColorScheme.of(ctx).onSurface;
     final double l1 = baseColor.computeLuminance();
@@ -234,21 +242,65 @@ class _DateCell extends StatelessWidget {
     double contrast = (l1 > l2)
         ? (l1 + 0.05) / (l2 + 0.05)
         : (l2 + 0.05) / (l1 + 0.05);
-    return contrast >= 1.6 ? surface : onSurface;
+    final bool condition = contrast >= 1.6;
+    return (flip ? !condition : condition) ? surface : onSurface;
   }
 
   @override
   Widget build(BuildContext context) {
     final CalendarData? data = calendarData[date.year]?[date.month]?[date.date];
     final Color color = data?.color ?? Colors.purple;
-    final Color textColor = textColorPreferSurface(color, context);
+    final String text = data?.text ?? 'N/A';
+    final Color textColor = contrastColorPrefer(color, context);
+    final Color dateColor = contrastColorPrefer(color, context, selected);
     return DecoratedBox(
       decoration: BoxDecoration(color: color, borderRadius: .circular(3)),
-      child: Center(
-        child: Text(
-          data?.text ?? 'N/A',
-          style: TextTheme.of(context).labelSmall?.copyWith(color: textColor),
-        ),
+      child: Stack(
+        children: [
+          Align(
+            alignment: .xy(0, -0.9),
+            child: FractionallySizedBox(
+              widthFactor: 0.4,
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: Stack(
+                  children: [
+                    if (selected) Positioned.fill(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(shape: .circle, color: contrastColorPrefer(color, context)),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: LayoutBuilder(
+                        builder: (context, constraint) {
+                          return Center(
+                            child: Text(
+                              date.date.toString(),
+                              textAlign: .center,
+                              style: DefaultTextStyle.of(
+                                context,
+                              ).style.copyWith(color: dateColor, height: 0, fontSize: constraint.maxHeight/1.8, fontWeight: .w800),
+                            ),
+                          );
+                        }
+                      ),
+                    ),
+                  ],
+                ),
+                // child: ColoredBox(color: Colors.black)
+              ),
+            ),
+          ),
+          Center(
+            child: Text(
+              text,
+              textAlign: .center,
+              style: DefaultTextStyle.of(
+                context,
+              ).style.copyWith(color: textColor),
+            ),
+          ),
+        ],
       ),
     );
   }
