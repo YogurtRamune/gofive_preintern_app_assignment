@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
 
@@ -25,17 +26,7 @@ class CalendarState {
     int startAt = (jiffy.dayOfWeek-2)%7;
     int diff = index - startAt;
     Jiffy r = jiffy.add(days: diff);
-    late int place;
-    if (diff < 0) {
-      place = -1;
-    }
-    else if (r.date <= r.daysInMonth) {
-      place = 0;
-    }
-    else {
-      place = 1;
-    }
-    return (r, place);
+    return (r, r.month-month);
   }
   bool isDiffMonth(CalendarState other) {
     return other.month != month || other.year != year;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_preintern_app/bloc/calendar_bloc.dart';
 import 'package:flutter_preintern_app/component/help_button.dart';
+import 'package:flutter_preintern_app/mock/calendar_data.dart';
 import 'package:jiffy/jiffy.dart';
 
 class CalendarPage extends StatelessWidget {
@@ -55,7 +56,7 @@ class _BottomSheet extends StatelessWidget {
           builder: (context, scrollController) {
             return DecoratedBox(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: Theme.of(context).colorScheme.surfaceContainerHigh,
                 border: Border(
                   top: BorderSide(color: Theme.of(context).colorScheme.outline),
                 ),
@@ -72,7 +73,7 @@ class _BottomSheet extends StatelessWidget {
                 controller: scrollController,
                 slivers: [
                   // ── Pinned header that doubles as the drag handle ─────────
-                  _BottomSheetHandle(),
+                  _BottomSheetHeader(),
                   SliverFixedExtentList(
                     itemExtent: 56,
                     delegate: SliverChildBuilderDelegate(
@@ -94,42 +95,64 @@ class _BottomSheet extends StatelessWidget {
   }
 }
 
-class _BottomSheetHandle extends StatelessWidget {
+class _BottomSheetHeader extends StatelessWidget {
+  static const double _spaceHeight = 40;
 
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
       pinned: true,
       automaticallyImplyLeading: false,
-      backgroundColor: Theme.of(
-        context,
-      ).colorScheme.surfaceContainerHighest,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
-      toolbarHeight: 20,
-      expandedHeight: 20,
-      collapsedHeight: 20,
+      toolbarHeight: _spaceHeight,
+      expandedHeight: _spaceHeight,
+      collapsedHeight: _spaceHeight,
       flexibleSpace: Stack(
         children: [
+          _BottomSheetHandle(),
           Align(
-            alignment: .topCenter,
+            alignment: .centerLeft,
             child: Padding(
-              padding: .only(top: 5),
-              child: SizedBox(
-                height: 5,
-                child: FractionallySizedBox(
-                  widthFactor: 0.15,
-                  child: DecoratedBox(
-                    decoration: ShapeDecoration(
-                      shape: StadiumBorder(),
-                      color: ColorScheme.of(context).outline,
-                    ),
-                  ),
-                ),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: BlocBuilder<CalendarBloc, CalendarState>(
+                builder: (context, state) {
+                  Jiffy jdate = state.jiffy;
+                  return Row(
+                    children: [
+                      Text('${jdate.dayOfWeek} ${jdate.date} ${jdate.month}'),
+                    ],
+                  );
+                },
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _BottomSheetHandle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: .topCenter,
+      child: Padding(
+        padding: .only(top: 5),
+        child: SizedBox(
+          height: 5,
+          child: FractionallySizedBox(
+            widthFactor: 0.15,
+            child: DecoratedBox(
+              decoration: ShapeDecoration(
+                shape: StadiumBorder(),
+                color: ColorScheme.of(context).outline,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -156,35 +179,38 @@ class _Body extends StatelessWidget {
         ),
         SizedBox(height: 10),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
-            child: BlocBuilder<CalendarBloc, CalendarState>(
-              buildWhen: (previous, current) => previous.isDiffMonth(current),
-              builder: (context, state) {
-                const ncol = 7;
-                const nrow = 6;
-                return Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: List<Expanded>.generate(nrow, (row) {
-                    return Expanded(
-                      child: Row(
-                        children: List<Widget>.generate(ncol, (col) {
-                          // debugPrint('$row, $col, ${row * ncol + col}');
-                          final (date, place) = state.dateAtIndex(
-                            (row * ncol) + col,
-                          );
-                          return Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: DateCell(date: date, place: place),
-                            ),
-                          );
-                        }),
-                      ),
-                    );
-                  }),
-                );
-              },
+          child: ColoredBox(
+            color: ColorScheme.of(context).surfaceContainerHigh,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 2, right: 2, top: 2),
+              child: BlocBuilder<CalendarBloc, CalendarState>(
+                buildWhen: (previous, current) => previous.isDiffMonth(current),
+                builder: (context, state) {
+                  const ncol = 7;
+                  const nrow = 6;
+                  return Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: List<Expanded>.generate(nrow, (row) {
+                      return Expanded(
+                        child: Row(
+                          children: List<Widget>.generate(ncol, (col) {
+                            // debugPrint('$row, $col, ${row * ncol + col}');
+                            final (date, place) = state.dateAtIndex(
+                              (row * ncol) + col,
+                            );
+                            return Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: _DateCell(date: date, place: place),
+                              ),
+                            );
+                          }),
+                        ),
+                      );
+                    }),
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -193,29 +219,35 @@ class _Body extends StatelessWidget {
   }
 }
 
-class DateCell extends StatelessWidget {
+class _DateCell extends StatelessWidget {
   final Jiffy date;
   final int place;
 
-  const DateCell({super.key, required this.date, required this.place})
+  const _DateCell({super.key, required this.date, required this.place})
     : assert(-1 <= place && place <= 1);
+
+  static Color textColorPreferSurface(Color baseColor, BuildContext ctx) {
+    final Color surface = ColorScheme.of(ctx).surface;
+    final Color onSurface = ColorScheme.of(ctx).onSurface;
+    final double l1 = baseColor.computeLuminance();
+    final double l2 = surface.computeLuminance();
+    double contrast = (l1 > l2)
+        ? (l1 + 0.05) / (l2 + 0.05)
+        : (l2 + 0.05) / (l1 + 0.05);
+    return contrast >= 1.6 ? surface : onSurface;
+  }
 
   @override
   Widget build(BuildContext context) {
-    // return Container(
-    //   color: (row+col)%2==0 ? Colors.blue : Colors.orange
-    // );
+    final CalendarData? data = calendarData[date.year]?[date.month]?[date.date];
+    final Color color = data?.color ?? Colors.purple;
+    final Color textColor = textColorPreferSurface(color, context);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: ((date.millisecondsSinceEpoch) / 86400000).floor() % 2 == 0
-            ? Colors.blue
-            : Colors.orange,
-        borderRadius: .circular(3),
-      ),
+      decoration: BoxDecoration(color: color, borderRadius: .circular(3)),
       child: Center(
         child: Text(
-          '$place ${date.date}',
-          style: TextTheme.of(context).labelSmall,
+          data?.text ?? 'N/A',
+          style: TextTheme.of(context).labelSmall?.copyWith(color: textColor),
         ),
       ),
     );

@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 ///   Theme.of(context).textTheme.bodyMedium
 abstract final class AppTheme {
   // ── Palette ──────────────────────────────────────────────────────────────
-  static const primary = Color(0xFFE05A2B);
+  static const primary = Color.fromRGBO(223, 101, 61, 1);
   static const onSurface = Color(0xFF1A1A1A);
   static const surface = Color(0xFFFFFFFF);
+  static const surfaceContainerHigh = Color.fromARGB(255, 246, 246, 248);
   static const outline = Color(0xFFE0E0E0);
   static const hint = Color(0xFFBDBDBD);
   static const icon = Color.fromARGB(255, 181, 143, 143);
@@ -42,6 +43,7 @@ abstract final class AppTheme {
       surface: surface,
       onSurface: onSurface,
       outline: outline,
+      surfaceContainerHigh: surfaceContainerHigh
     ),
 
     textTheme: TextTheme(
