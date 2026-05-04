@@ -660,27 +660,70 @@ class _Header extends StatelessWidget {
                         );
                       },
                     ),
+                    // Inside _Header's Positioned widget row
                     SizedBox(width: 5),
-                    GestureDetector(
-                      onTap: () {
-                        final bloc = context.read<CalendarBloc>();
-                        bloc.add(
-                          CalendarAddRequest(
-                            CalendarActivity(
-                              type: CalendarActivityEnum.activity,
-                              time: Jiffy.now(),
-                              text: "User Request",
-                            ),
+                    IconButton(
+                      icon: const Icon(Icons.add, size: 30),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (modalContext) => _CalendarRequestSheet(
+                            calendarBloc: context.read<CalendarBloc>(),
                           ),
                         );
                       },
-                      child: const Icon(Icons.add, size: 30),
                     ),
                   ],
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CalendarRequestSheet extends StatelessWidget {
+  final CalendarBloc calendarBloc;
+
+  const _CalendarRequestSheet({required this.calendarBloc});
+
+  @override
+  Widget build(BuildContext context) {
+    final lang = LangText.of(context);
+    final textTheme = TextTheme.of(context);
+    // Accessing the theme's color scheme to get the primary color
+    final scheme = ColorScheme.of(context);
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: CalendarRequest.values.map((request) {
+            return ListTile(
+              leading: SizedBox(
+                width: 20,
+                height: 20,
+                // Updated: Applying the theme's primary color to the icon
+                child: request.icon.withColor(scheme.primary),
+              ),
+              title: Text(lang[request.langKey], style: textTheme.bodyLarge),
+              onTap: () {
+                calendarBloc.add(
+                  CalendarAddRequest(
+                    CalendarActivity(
+                      type: CalendarActivityEnum.activity,
+                      time: Jiffy.now(),
+                      text: lang[request.langKey],
+                    ),
+                  ),
+                );
+                Navigator.pop(context);
+              },
+            );
+          }).toList(),
         ),
       ),
     );

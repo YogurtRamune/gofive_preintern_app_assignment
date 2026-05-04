@@ -2,19 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_preintern_app/core/app_theme.dart';
 import 'package:jiffy/jiffy.dart';
 
-class CalendarActivityIcon extends StatelessWidget {
+// Renamed from CalendarActivityIcon to CalendarIcon to suit both contexts
+class CalendarIcon extends StatelessWidget {
   final String? emoji;
   final IconData? iconData;
   final Color? color;
-  const CalendarActivityIcon({super.key, this.emoji, this.iconData, this.color})
+  const CalendarIcon({super.key, this.emoji, this.iconData, this.color})
     : assert((emoji == null) != (iconData == null));
 
-  CalendarActivityIcon withColor(Color color) => CalendarActivityIcon(
-    key: key,
-    emoji: emoji,
-    iconData: iconData,
-    color: color,
-  );
+  CalendarIcon withColor(Color color) =>
+      CalendarIcon(key: key, emoji: emoji, iconData: iconData, color: color);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +21,7 @@ class CalendarActivityIcon extends StatelessWidget {
     } else if (iconData is IconData) {
       r = Icon(iconData!, color: color);
     } else {
-      r = Placeholder();
+      r = const Placeholder();
     }
     return AspectRatio(aspectRatio: 1, child: FittedBox(child: r));
   }
@@ -33,38 +30,38 @@ class CalendarActivityIcon extends StatelessWidget {
 enum CalendarActivityEnum {
   irregularWork(
     'abnormal_status',
-    CalendarActivityIcon(iconData: Icons.warning_amber_rounded),
+    CalendarIcon(iconData: Icons.warning_amber_rounded),
   ),
-  overtime('overtime', CalendarActivityIcon(iconData: Icons.more_time)),
-  document(
-    'document',
-    CalendarActivityIcon(iconData: Icons.description_outlined),
-  ),
-  activity('activity', CalendarActivityIcon(iconData: Icons.calendar_month)),
-  announcement('announcement', CalendarActivityIcon(emoji: '📣')),
-  swapShift('swap_shift', CalendarActivityIcon(iconData: Icons.swap_horiz)),
-  interview('interview', CalendarActivityIcon(emoji: '👥')),
-  birthday('birthday', CalendarActivityIcon(emoji: '🎂')),
-  firstDay('first_day', CalendarActivityIcon(emoji: '👋')),
-  lastDay('last_day', CalendarActivityIcon(emoji: '🍂'));
+  overtime('overtime', CalendarIcon(iconData: Icons.more_time)),
+  document('document', CalendarIcon(iconData: Icons.description_outlined)),
+  activity('activity', CalendarIcon(iconData: Icons.calendar_month)),
+  announcement('announcement', CalendarIcon(emoji: '📢')),
+  swapShift('swap_shift', CalendarIcon(iconData: Icons.swap_horiz)),
+  interview('interview', CalendarIcon(emoji: '🤝')),
+  birthday('birthday', CalendarIcon(emoji: '🎂')),
+  firstDay('first_day', CalendarIcon(emoji: '🆕')),
+  lastDay('last_day', CalendarIcon(emoji: '🏁'));
 
   final String localizationKey;
-  final CalendarActivityIcon icon;
+  final CalendarIcon icon;
   const CalendarActivityEnum(this.localizationKey, this.icon);
 }
 
 enum CalendarRequest {
-  leave('leave'),
-  offsiteWork('offsite_work'),
-  overtime('overtime_request'),
-  endorse('endorse'),
-  collectTimeDate('collect_time_date'),
-  redeem('redeem'),
-  expense('expense');
-
-  const CalendarRequest(this.langKey);
+  leave('leave', CalendarIcon(iconData: Icons.event_busy_outlined)),
+  offsiteWork('offsite_work', CalendarIcon(iconData: Icons.home_work_outlined)),
+  overtime('overtime_request', CalendarIcon(iconData: Icons.timer_outlined)),
+  endorse('endorse', CalendarIcon(iconData: Icons.verified_outlined)),
+  collectTimeDate(
+    'collect_time_date',
+    CalendarIcon(iconData: Icons.edit_calendar_outlined),
+  ),
+  redeem('redeem', CalendarIcon(iconData: Icons.redeem_outlined)),
+  expense('expense', CalendarIcon(iconData: Icons.receipt_long_outlined));
 
   final String langKey;
+  final CalendarIcon icon; // Added icon field
+  const CalendarRequest(this.langKey, this.icon);
 }
 
 final class CalendarActivity {
@@ -92,7 +89,6 @@ final class CalendarData {
     this.acitivies = const [],
   });
 
-  // Add this inside your CalendarData class in mock/calendar_data.dart
   CalendarData copyWith({
     Color? color,
     String? text,
@@ -110,10 +106,15 @@ final class CalendarData {
   }
 
   List<Widget> icons([Color? color]) {
-    Set<CalendarActivityIcon> iconEnums = {};
+    // Collects icons from both activities and requests
+    Set<CalendarIcon> iconEnums = {};
     for (var element in acitivies) {
       iconEnums.add(element.type.icon);
     }
+    for (var element in requests) {
+      iconEnums.add(element.icon);
+    }
+
     return iconEnums
         .map((icon) => color != null ? icon.withColor(color) : icon)
         .toList();
