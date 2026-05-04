@@ -13,7 +13,7 @@ abstract final class AppTheme {
   static const surface = Color(0xFFFFFFFF);
   static const surfaceContainerHigh = Color.fromARGB(255, 246, 246, 248);
   static const outline = Color(0xFFE0E0E0);
-  static const hint = Color(0xFFBDBDBD);
+  static const outlineVariant = Color(0xFFBDBDBD);
   static const icon = Color.fromARGB(255, 181, 143, 143);
 
   static const pinBackground = Color.fromARGB(255, 247, 254, 253);
@@ -43,7 +43,8 @@ abstract final class AppTheme {
       surface: surface,
       onSurface: onSurface,
       outline: outline,
-      surfaceContainerHigh: surfaceContainerHigh
+      surfaceContainerHigh: surfaceContainerHigh,
+      outlineVariant: outlineVariant
     ),
 
     textTheme: TextTheme(
@@ -64,7 +65,7 @@ abstract final class AppTheme {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: surface,
-      hintStyle: baseStyle.copyWith(color: hint, fontSize: 13.5),
+      hintStyle: baseStyle.copyWith(color: outlineVariant, fontSize: 13.5),
       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),

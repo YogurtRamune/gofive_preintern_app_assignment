@@ -96,12 +96,12 @@ class _SearchBar extends StatelessWidget {
           hintText: 'Search staff name, role, or email',
           hintStyle: Theme.of(
             context,
-          ).textTheme.bodyLarge!.copyWith(color: AppTheme.hint),
+          ).textTheme.bodyLarge!.copyWith(color: AppTheme.outlineVariant),
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 15, right: 2.6),
             child: Icon(
               Icons.search_rounded,
-              color: AppTheme.hint,
+              color: AppTheme.outlineVariant,
               size: 20,
               weight: 900,
             ),
@@ -238,7 +238,7 @@ class _StaffTile extends StatelessWidget {
                       member.role!,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontSize: 12,
-                        color: AppTheme.hint,
+                        color: AppTheme.outlineVariant,
                       ),
                     ),
                 ],

@@ -1,3 +1,4 @@
+
 enum LanguageEnum {
 
   // Changing the app language won't change language's name (if the app is currently in english then th.langName stills says "ภาษาไทย")

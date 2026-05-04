@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_preintern_app/bloc/language_bloc.dart';
 import 'package:flutter_preintern_app/core/app_theme.dart';
+import 'package:flutter_preintern_app/dev/test_painter.dart';
 import 'package:flutter_preintern_app/pages/main_page/calendar_page.dart';
 import 'package:flutter_preintern_app/pages/main_page/main_page.dart';
 import 'package:flutter_preintern_app/pages/pin_page.dart';
@@ -14,13 +17,18 @@ class EmpeoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Empeo',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      // home: LoginPage()
-      home: MainPage(
-        initPage: CalendarPage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => LanguageBloc(.th))
+      ],
+      child: MaterialApp(
+        title: 'Empeo',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        // home: PinPage()
+        home: MainPage(
+          initPage: CalendarPage(),
+        ),
       ),
     );
   }

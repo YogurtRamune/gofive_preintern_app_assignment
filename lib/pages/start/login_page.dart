@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
               _obscurePassword
                   ? Icons.visibility_off_outlined
                   : Icons.visibility_outlined,
-              color: AppTheme.hint,
+              color: AppTheme.outlineVariant,
               size: 20,
             ),
             onPressed: () =>
@@ -139,7 +139,7 @@ class _OrDivider extends StatelessWidget {
             'or continue with',
             style: textTheme.bodyMedium?.copyWith(
               fontSize: 13,
-              color: AppTheme.hint,
+              color: AppTheme.outlineVariant,
             ),
           ),
         ),
@@ -231,7 +231,7 @@ class _FooterText extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = Theme.of(
       context,
-    ).textTheme.bodyMedium?.copyWith(fontSize: 12, color: AppTheme.hint);
+    ).textTheme.bodyMedium?.copyWith(fontSize: 12, color: AppTheme.outlineVariant);
 
     return Text(
       'By continuing, you agree to our\nTerms & Conditions AND Privacy Policy',
