@@ -271,7 +271,7 @@ class _Button extends StatelessWidget {
               child: DefaultTextStyle.merge(
                 style: textStyle,
                 child: IconTheme.merge(
-                  IconThemeData(
+                  data: IconThemeData(
                     color: textStyle.color,
                     size: textStyle.fontSize,
                   ),
