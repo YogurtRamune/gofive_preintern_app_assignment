@@ -8,30 +8,42 @@ import 'package:flutter_preintern_app/mock/calendar_data.dart';
 import 'package:jiffy/jiffy.dart';
 
 class CalendarPage extends StatelessWidget {
-  final int month;
-  final int year;
+  final int month, year;
   const CalendarPage({super.key, this.month = 2, this.year = 2026});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => CalendarBloc(month: month, year: year),
-      child: SafeArea(
-        child: Stack(
-          fit: .expand,
-          children: [
-            // Reserve the same bottom space the Placeholder used to occupy
-            // so the calendar grid isn't obscured by the sheet at rest.
-            Column(
-              children: [
-                _Header(),
-                Flexible(flex: 10, child: _Body()),
-                Flexible(flex: 3, child: SizedBox.expand()),
-              ],
-            ),
-            Positioned.fill(child: _BottomSheet()),
-          ],
-        ),
+    return RepositoryProvider(
+      create: (context) => CalendarRepository(),
+      child: BlocProvider(
+        create: (context) => CalendarBloc(
+          month: month,
+          year: year,
+          repo: context.read<CalendarRepository>(),
+        )..add(CalendarLoadData()), // Initial load on build[cite: 1]
+        child: const _CalendarView(),
+      ),
+    );
+  }
+}
+
+class _CalendarView extends StatelessWidget {
+  const _CalendarView();
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Column(
+            children: [
+              _Header(),
+              Flexible(flex: 10, child: _Body()),
+              const Flexible(flex: 3, child: SizedBox.expand()),
+            ],
+          ),
+          Positioned.fill(child: _BottomSheet()),
+        ],
       ),
     );
   }
@@ -649,7 +661,21 @@ class _Header extends StatelessWidget {
                       },
                     ),
                     SizedBox(width: 5),
-                    GestureDetector(child: Icon(Icons.add, size: 30)),
+                    GestureDetector(
+                      onTap: () {
+                        final bloc = context.read<CalendarBloc>();
+                        bloc.add(
+                          CalendarAddRequest(
+                            CalendarActivity(
+                              type: CalendarActivityEnum.activity,
+                              time: Jiffy.now(),
+                              text: "User Request",
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Icon(Icons.add, size: 30),
+                    ),
                   ],
                 ),
               ),

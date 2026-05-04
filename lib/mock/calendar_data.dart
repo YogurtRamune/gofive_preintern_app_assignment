@@ -92,6 +92,23 @@ final class CalendarData {
     this.acitivies = const [],
   });
 
+  // Add this inside your CalendarData class in mock/calendar_data.dart
+  CalendarData copyWith({
+    Color? color,
+    String? text,
+    bool? blocked,
+    Set<CalendarRequest>? requests,
+    List<CalendarActivity>? acitivies,
+  }) {
+    return CalendarData(
+      color: color ?? this.color,
+      text: text ?? this.text,
+      blocked: blocked ?? this.blocked,
+      requests: requests ?? this.requests,
+      acitivies: acitivies ?? this.acitivies,
+    );
+  }
+
   List<Widget> icons([Color? color]) {
     Set<CalendarActivityIcon> iconEnums = {};
     for (var element in acitivies) {
@@ -189,3 +206,37 @@ final Map<int, Map<int, Map<int, CalendarData>>> calendarData = () {
 
   return result;
 }();
+
+class CalendarRepository {
+  // Initialize with the existing mock data
+  final Map<int, Map<int, Map<int, CalendarData>>> _db = Map.from(calendarData);
+
+  Future<Map<int, CalendarData>> getMonthData(int year, int month) async {
+    // Simulate network latency
+    await Future.delayed(const Duration(milliseconds: 100));
+    return _db[year]?[month] ?? {};
+  }
+
+  Future<void> addActivity(int year, int month, int date, CalendarActivity activity) async {
+    await Future.delayed(const Duration(milliseconds: 50));
+    
+    _db.putIfAbsent(year, () => {});
+    _db[year]!.putIfAbsent(month, () => {});
+    
+    final currentDayData = _db[year]![month]![date];
+
+    if (currentDayData != null) {
+      // Update existing day entry
+      _db[year]![month]![date] = currentDayData.copyWith(
+        acitivies: [...currentDayData.acitivies, activity],
+      );
+    } else {
+      // Create new day entry if empty
+      _db[year]![month]![date] = CalendarData(
+        color: const Color.fromRGBO(220, 110, 77, 1),
+        text: "New Activity",
+        acitivies: [activity],
+      );
+    }
+  }
+}
