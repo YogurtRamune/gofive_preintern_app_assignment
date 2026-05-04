@@ -4,7 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_preintern_app/bloc/calendar_bloc.dart';
 import 'package:flutter_preintern_app/component/help_button.dart';
 import 'package:flutter_preintern_app/core/lang_text.dart';
-import 'package:flutter_preintern_app/mock/calendar_data.dart';
+import 'package:flutter_preintern_app/mock/calendar_data.dart'
+    show
+        CalendarActivity,
+        CalendarActivityEnum,
+        CalendarData,
+        CalendarRepository,
+        CalendarRequest;
 import 'package:jiffy/jiffy.dart';
 
 class CalendarPage extends StatelessWidget {
@@ -87,23 +93,93 @@ class _BottomSheet extends StatelessWidget {
                   ),
                 ],
               ),
-              child: CustomScrollView(
-                controller: scrollController,
-                slivers: [
-                  // ── Pinned header that doubles as the drag handle ─────────
-                  _BottomSheetHeader(),
-                  SliverFixedExtentList(
-                    itemExtent: 56,
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => ListTile(
-                        leading: const Icon(Icons.event),
-                        title: Text('Event $index'),
-                        subtitle: Text('Description for event $index'),
-                      ),
-                      childCount: 20,
-                    ),
-                  ),
-                ],
+              child: BlocBuilder<CalendarBloc, CalendarState>(
+                buildWhen: (previous, current) =>
+                    previous.isDiffPicked(current) ||
+                    previous.visibleMonthData != current.visibleMonthData ||
+                    previous.isLoading != current.isLoading,
+                builder: (context, state) {
+                  final CalendarData? dayData = state.dataFor(
+                    state.pickedYear,
+                    state.pickedMonth,
+                    state.pickedDate,
+                  );
+                  final List<CalendarActivity> activities =
+                      dayData?.acitivies ?? [];
+                  final Set<CalendarRequest> requests = dayData?.requests ?? {};
+
+                  return CustomScrollView(
+                    controller: scrollController,
+                    slivers: [
+                      // ── Pinned header that doubles as the drag handle ──
+                      _BottomSheetHeader(),
+                      SliverToBoxAdapter(child: SizedBox(height: 15,),),
+                      if (state.isLoading)
+                        const SliverFillRemaining(
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      else if (activities.isEmpty && requests.isEmpty)
+                        const SliverFillRemaining(
+                          child: Center(
+                            child: Icon(Icons.event_busy, size: 48),
+                          ),
+                        )
+                      else ...[
+                        if (requests.isNotEmpty)
+                          SliverFixedExtentList(
+                            itemExtent: 56,
+                            delegate: SliverChildBuilderDelegate((context, i) {
+                              final req = requests.elementAt(i);
+                              final lang = LangText.of(context);
+                              return ListTile(
+                                leading: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: req.icon.withColor(
+                                    ColorScheme.of(context).primary,
+                                  ),
+                                ),
+                                title: Text(lang[req.langKey]),
+                              );
+                            }, childCount: requests.length),
+                          ),
+                        if (activities.isNotEmpty)
+                          SliverFixedExtentList(
+                            itemExtent: 40,
+                            delegate: SliverChildBuilderDelegate((context, i) {
+                              final act = activities[i];
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 2,
+                                  horizontal: 20,
+                                ),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: ColorScheme.of(context).surface,
+                                    borderRadius: .circular(7),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: .max,
+                                      children: [
+                                        Text(act.time.format(pattern: 'HH:mm')),
+                                        SizedBox(width: 50,),
+                                        act.type.icon,
+                                        Text(
+                                          act.text
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }, childCount: activities.length),
+                          ),
+                      ],
+                    ],
+                  );
+                },
               ),
             );
           },
@@ -259,25 +335,37 @@ class _Body extends StatelessWidget {
         Expanded(
           child: ColoredBox(
             color: ColorScheme.of(context).surfaceContainerHigh,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 2, right: 2, top: 2),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: List<Expanded>.generate(6, (row) {
-                  return Expanded(
-                    child: Row(
-                      children: List<Widget>.generate(7, (col) {
-                        return Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(3),
-                            child: _DateCell(index: row * 7 + col),
-                          ),
-                        );
-                      }),
-                    ),
-                  );
-                }),
-              ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 2, right: 2, top: 2),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: List<Expanded>.generate(6, (row) {
+                      return Expanded(
+                        child: Row(
+                          children: List<Widget>.generate(7, (col) {
+                            return Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: _DateCell(index: row * 7 + col),
+                              ),
+                            );
+                          }),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+                BlocBuilder<CalendarBloc, CalendarState>(
+                  buildWhen: (previous, current) =>
+                      previous.isLoading != current.isLoading,
+                  builder: (context, state) => state.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : const SizedBox.shrink(),
+                ),
+              ],
             ),
           ),
         ),
@@ -524,11 +612,20 @@ class _DateCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CalendarBloc, CalendarState>(
       buildWhen: (previous, current) =>
-          previous.isDiffPicked(current), // updated
+          previous.isDiffPicked(current) ||
+          previous.isDiffMonth(current) ||
+          previous.visibleMonthData != current.visibleMonthData ||
+          previous.isLoading != current.isLoading,
       builder: (context, state) {
+        // Hide all cell content while data is being fetched for the month.
+        if (state.isLoading) return const SizedBox.expand();
+
         final (date, place) = state.dateAtIndex(index);
-        final CalendarData? data =
-            calendarData[date.year]?[date.month]?[date.date];
+        final CalendarData? data = state.dataFor(
+          date.year,
+          date.month,
+          date.date,
+        );
 
         final int alpha = place == 0 ? 255 : 127;
         final Color color = (data?.color ?? Colors.purple).withAlpha(alpha);

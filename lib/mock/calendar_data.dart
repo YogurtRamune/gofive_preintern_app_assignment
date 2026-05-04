@@ -39,8 +39,8 @@ enum CalendarActivityEnum {
   swapShift('swap_shift', CalendarIcon(iconData: Icons.swap_horiz)),
   interview('interview', CalendarIcon(emoji: '🤝')),
   birthday('birthday', CalendarIcon(emoji: '🎂')),
-  firstDay('first_day', CalendarIcon(emoji: '🆕')),
-  lastDay('last_day', CalendarIcon(emoji: '🏁'));
+  firstDay('first_day', CalendarIcon(emoji: '👋')),
+  lastDay('last_day', CalendarIcon(emoji: '🍂'));
 
   final String localizationKey;
   final CalendarIcon icon;
@@ -155,7 +155,7 @@ final Map<int, Map<int, Map<int, CalendarData>>> calendarData = () {
             17,
             0,
           ], isUtc: true),
-          text: text,
+          text: "Meeting",
         ),
         CalendarActivity(
           type: .announcement,
@@ -177,7 +177,7 @@ final Map<int, Map<int, Map<int, CalendarData>>> calendarData = () {
             17,
             0,
           ], isUtc: true),
-          text: text,
+          text: "Announce",
         ),
         CalendarActivity(
           type: .document,
@@ -199,7 +199,7 @@ final Map<int, Map<int, Map<int, CalendarData>>> calendarData = () {
             17,
             0,
           ], isUtc: true),
-          text: text,
+          text: "New",
         ),
       ],
     );

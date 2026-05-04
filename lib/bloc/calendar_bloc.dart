@@ -27,9 +27,12 @@ class CalendarAddRequest extends CalendarEvent {
   const CalendarAddRequest(this.activity);
 }
 
+typedef CalendarVisibleMonthData =
+    Map<({int year, int month}), Map<int, CalendarData>>;
+
 class CalendarState {
   final int pickedDate, pickedMonth, pickedYear, month, year;
-  final Map<int, CalendarData> monthData;
+  final CalendarVisibleMonthData visibleMonthData;
   final bool isLoading;
 
   const CalendarState({
@@ -38,7 +41,7 @@ class CalendarState {
     required this.pickedDate,
     required this.pickedMonth,
     required this.pickedYear,
-    this.monthData = const {},
+    this.visibleMonthData = const {},
     this.isLoading = false,
   });
 
@@ -52,7 +55,7 @@ class CalendarState {
     int? pickedDate,
     int? pickedMonth,
     int? pickedYear,
-    Map<int, CalendarData>? monthData,
+    CalendarVisibleMonthData? visibleMonthData,
     bool? isLoading,
   }) => CalendarState(
     month: month ?? this.month,
@@ -60,9 +63,12 @@ class CalendarState {
     pickedDate: pickedDate ?? this.pickedDate,
     pickedMonth: pickedMonth ?? this.pickedMonth,
     pickedYear: pickedYear ?? this.pickedYear,
-    monthData: monthData ?? this.monthData,
+    visibleMonthData: visibleMonthData ?? this.visibleMonthData,
     isLoading: isLoading ?? this.isLoading,
   );
+
+  CalendarData? dataFor(int year, int month, int date) =>
+      visibleMonthData[(year: year, month: month)]?[date];
 
   bool isSelected(Jiffy cellDate) =>
       pickedDate == cellDate.date &&
@@ -95,9 +101,14 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         ),
       ) {
     on<CalendarLoadData>((event, emit) async {
+      final int loadYear = state.year;
+      final int loadMonth = state.month;
       emit(state.copyWith(isLoading: true));
-      final data = await repo.getMonthData(state.year, state.month);
-      emit(state.copyWith(monthData: data, isLoading: false));
+      final data = await _getVisibleMonthData(loadYear, loadMonth);
+
+      if (state.year != loadYear || state.month != loadMonth) return;
+
+      emit(state.copyWith(visibleMonthData: data, isLoading: false));
     });
 
     on<CalendarNextMonth>((event, emit) {
@@ -109,6 +120,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
           pickedDate: 1,
           pickedMonth: r.month,
           pickedYear: r.year,
+          visibleMonthData: {}, // clear stale data immediately
+          isLoading: true, // cells go invisible this same frame
         ),
       );
       add(CalendarLoadData());
@@ -123,6 +136,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
           pickedDate: 1,
           pickedMonth: r.month,
           pickedYear: r.year,
+          visibleMonthData: {}, // clear stale data immediately
+          isLoading: true, // cells go invisible this same frame
         ),
       );
       add(CalendarLoadData());
@@ -147,5 +162,27 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       );
       add(CalendarLoadData());
     });
+  }
+
+  Future<CalendarVisibleMonthData> _getVisibleMonthData(
+    int year,
+    int month,
+  ) async {
+    final months = [
+      Jiffy.parseFromList([year, month], isUtc: true).subtract(months: 1),
+      Jiffy.parseFromList([year, month], isUtc: true),
+      Jiffy.parseFromList([year, month], isUtc: true).add(months: 1),
+    ];
+
+    final entries = await Future.wait(
+      months.map((date) async {
+        final data = Map<int, CalendarData>.from(
+          await repo.getMonthData(date.year, date.month),
+        );
+        return MapEntry((year: date.year, month: date.month), data);
+      }),
+    );
+
+    return Map.fromEntries(entries);
   }
 }
