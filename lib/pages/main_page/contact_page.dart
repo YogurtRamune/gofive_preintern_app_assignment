@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_preintern_app/mock/contact_data.dart';
 import 'package:flutter_preintern_app/core/app_theme.dart';
@@ -132,7 +133,7 @@ class _SectionHeader extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 10),
         child: Text(
           title,
-          style: Theme.of(context).extension<AppTextStyles>()!.sectionHeader,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
       ),
     );

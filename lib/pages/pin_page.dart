@@ -1,3 +1,4 @@
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -97,9 +98,7 @@ class PinPage extends StatelessWidget {
                               ),
                               Text(
                                 "To allow secure access to app and payslip information",
-                                style: Theme.of(
-                                  context,
-                                ).extension<AppTextStyles>()!.pinBody,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               SizedBox(height: 25),
                               SizedBox.square(
@@ -134,9 +133,7 @@ class PinPage extends StatelessWidget {
                               SizedBox(height: 15),
                               Text(
                                 "Enter 6 digit pin code.",
-                                style: Theme.of(
-                                  context,
-                                ).extension<AppTextStyles>()!.pinBody,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               SizedBox(height: 7),
                               SizedBox(
@@ -274,7 +271,7 @@ class _Button extends StatelessWidget {
               child: DefaultTextStyle.merge(
                 style: textStyle,
                 child: IconTheme.merge(
-                  data: IconThemeData(
+                  IconThemeData(
                     color: textStyle.color,
                     size: textStyle.fontSize,
                   ),

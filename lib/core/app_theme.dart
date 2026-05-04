@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 /// Central theme definition for the Empeo app.
@@ -52,6 +53,7 @@ abstract final class AppTheme {
         fontSize: 13,
         height: 1.55,
         fontWeight: FontWeight.w400,
+        letterSpacing: -0.2, // from pinBody
         color: onSurface,
       ),
       bodyLarge: baseStyle.copyWith(fontSize: 13.5, color: onSurface),
@@ -59,6 +61,11 @@ abstract final class AppTheme {
         fontSize: 14,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.3,
+      ),
+      titleMedium: baseStyle.copyWith(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: onSurface,
       ),
     ),
 
@@ -113,19 +120,13 @@ abstract final class AppTheme {
 /// Custom text styles that don't belong in Flutter's standard [TextTheme].
 ///
 /// Access via:
-///   `Theme.of(context).extension<AppTextStyles>()!.sectionHeader`
 ///   `Theme.of(context).extension<AppTextStyles>()!.avatarInitial`
 class AppTextStyles extends ThemeExtension<AppTextStyles> {
   const AppTextStyles({
-    required this.sectionHeader,
     required this.avatarInitial,
     required this.pinNumber,
     required this.pinHeader,
-    required this.pinBody,
   });
-
-  /// Bold label used for list section headers (e.g. "Own Team").
-  final TextStyle sectionHeader;
 
   /// Base style for initials inside a [CircleAvatar] — white + semi-bold.
   /// Supply [fontSize] via [copyWith] to match the avatar radius:
@@ -136,15 +137,8 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
 
   final TextStyle pinHeader;
 
-  final TextStyle pinBody;
-
   /// Default instance registered in [AppTheme.light].
   static final light = AppTextStyles(
-    sectionHeader: AppTheme.baseStyle.copyWith(
-      fontSize: 15,
-      fontWeight: FontWeight.w700,
-      color: AppTheme.onSurface,
-    ),
     avatarInitial: AppTheme.baseStyle.copyWith(
       color: Colors.white,
       fontWeight: FontWeight.w600,
@@ -159,39 +153,26 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
       fontWeight: FontWeight.w700,
       color: AppTheme.onSurface,
     ),
-    pinBody: AppTheme.baseStyle.copyWith(
-      fontSize: 13,
-      height: 1.55,
-      fontWeight: FontWeight.w400,
-      letterSpacing: -0.2,
-      color: AppTheme.onSurface,
-    ),
   );
 
   @override
   AppTextStyles copyWith({
-    TextStyle? sectionHeader,
     TextStyle? avatarInitial,
     TextStyle? pinNumber,
     TextStyle? pinHeader,
-    TextStyle? pinBody,
   }) => AppTextStyles(
-    sectionHeader: sectionHeader ?? this.sectionHeader,
     avatarInitial: avatarInitial ?? this.avatarInitial,
     pinNumber: pinNumber ?? this.pinNumber,
     pinHeader: pinHeader ?? this.pinHeader,
-    pinBody: pinBody ?? this.pinBody,
   );
 
   @override
   AppTextStyles lerp(AppTextStyles? other, double t) {
     if (other == null) return this;
     return AppTextStyles(
-      sectionHeader: TextStyle.lerp(sectionHeader, other.sectionHeader, t)!,
       avatarInitial: TextStyle.lerp(avatarInitial, other.avatarInitial, t)!,
       pinNumber: TextStyle.lerp(pinNumber, other.pinNumber, t)!,
       pinHeader: TextStyle.lerp(pinHeader, other.pinHeader, t)!,
-      pinBody: TextStyle.lerp(pinBody, other.pinBody, t)!,
     );
   }
 
