@@ -142,7 +142,7 @@ class _BottomSheetHeader extends StatelessWidget {
                             ).style.copyWith(fontWeight: .w400, fontSize: 16),
                           ),
                           GestureDetector(
-                            onTap: ()=>(),
+                            onTap: () => (),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: FittedBox(
@@ -151,20 +151,28 @@ class _BottomSheetHeader extends StatelessWidget {
                                   color: ColorScheme.of(context).outlineVariant,
                                   shadows: [
                                     Shadow(
-                                      offset: Offset(0,0),
-                                      color: ColorScheme.of(context).outlineVariant,
+                                      offset: Offset(0, 0),
+                                      color: ColorScheme.of(
+                                        context,
+                                      ).outlineVariant,
                                     ),
                                     Shadow(
-                                      offset: Offset(0,1),
-                                      color: ColorScheme.of(context).outlineVariant,
+                                      offset: Offset(0, 1),
+                                      color: ColorScheme.of(
+                                        context,
+                                      ).outlineVariant,
                                     ),
                                     Shadow(
-                                      offset: Offset(1,0),
-                                      color: ColorScheme.of(context).outlineVariant,
+                                      offset: Offset(1, 0),
+                                      color: ColorScheme.of(
+                                        context,
+                                      ).outlineVariant,
                                     ),
                                     Shadow(
-                                      offset: Offset(1,1),
-                                      color: ColorScheme.of(context).outlineVariant,
+                                      offset: Offset(1, 1),
+                                      color: ColorScheme.of(
+                                        context,
+                                      ).outlineVariant,
                                     ),
                                   ],
                                 ),
@@ -210,22 +218,29 @@ class _BottomSheetHandle extends StatelessWidget {
 }
 
 class _Body extends StatelessWidget {
+  // Mon→Sun maps to dayNum 2,3,4,5,6,7,1 in getDayByNumber
+  static const _weekOrder = [2, 3, 4, 5, 6, 7, 1];
+
   @override
   Widget build(BuildContext context) {
+    final lang = LangText.of(context);
+
     return Column(
       children: [
         SizedBox(
           height: 20,
           child: Row(
-            children: [
-              "จ",
-              "อ",
-              "พ",
-              "พฤ",
-              "ศ",
-              "ส",
-              "อา",
-            ].map((day) => Expanded(child: Center(child: Text(day)))).toList(),
+            children: _weekOrder
+                .map(
+                  (dayNum) => Expanded(
+                    child: Center(
+                      child: Text(
+                        lang.getDayByNumber(dayNum, format: DayFormat.short),
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
           ),
         ),
         SizedBox(height: 10),
@@ -353,12 +368,8 @@ class _DateCell extends StatelessWidget {
   BoxDecoration _cellDecoration(
     BuildContext context,
     Color color,
-    bool isThickBorder,
-    CalendarState state,
-    Jiffy date,
-    bool blocked,
+    bool blockedSelected,
   ) {
-    final bool blockedSelected = state.isSelected(date) && blocked;
     return BoxDecoration(
       color: color,
       borderRadius: BorderRadius.circular(_CellBlockedPainter.radius),
@@ -452,6 +463,51 @@ class _DateCell extends StatelessWidget {
     );
   }
 
+  Widget _buildIcons(
+    BuildContext context,
+    CalendarData? data, [
+    bool blockedSelected = false,
+    Color? color,
+  ]) {
+    final double borderPadding = _CellBlockedPainter.borderWidth(
+      blockedSelected,
+    );
+    return Align(
+      alignment: .bottomCenter,
+      widthFactor: 1,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Align(
+            alignment: .bottomCenter,
+            child: Padding(
+              padding: .only(
+                left: _CellBlockedPainter.thickBorder,
+                right: _CellBlockedPainter.thickBorder,
+              ),
+              child: Container(
+                height: constraints.maxHeight / 4.5,
+                decoration: BoxDecoration(
+                  borderRadius: .vertical(
+                    bottom: Radius.circular(5 - borderPadding),
+                  ),
+                ),
+                child: Padding(
+                  padding: .only(bottom: _CellBlockedPainter.thickBorder),
+                  child: Row(
+                    mainAxisAlignment: .center,
+                    children: (data?.icons(color) ?? [])
+                        .map((e) => Expanded(child: e))
+                        .toList(),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CalendarBloc, CalendarState>(
@@ -462,7 +518,6 @@ class _DateCell extends StatelessWidget {
         final CalendarData? data =
             calendarData[date.year]?[date.month]?[date.date];
 
-        const bool isThickBorder = false;
         final int alpha = place == 0 ? 255 : 127;
         final Color color = (data?.color ?? Colors.purple).withAlpha(alpha);
         final Color textColor = contrastColorPrefer(
@@ -471,6 +526,7 @@ class _DateCell extends StatelessWidget {
         ).withAlpha(alpha);
         final bool blocked = data?.blocked ?? false;
         final String text = data?.text ?? 'N/A';
+        final blockSelected = state.isSelected(date) && blocked;
 
         return GestureDetector(
           onTap: () => context.read<CalendarBloc>().add(
@@ -481,21 +537,14 @@ class _DateCell extends StatelessWidget {
             ),
           ),
           child: DecoratedBox(
-            decoration: _cellDecoration(
-              context,
-              color,
-              isThickBorder,
-              state,
-              date,
-              blocked,
-            ),
+            decoration: _cellDecoration(context, color, blockSelected),
             child: Stack(
               children: [
                 if (blocked)
                   Positioned.fill(
                     child: CustomPaint(
                       painter: _CellBlockedPainter(
-                        isThickBorder: isThickBorder,
+                        isThickBorder: blocked && state.isSelected(date),
                         diffMonth: place != 0,
                       ),
                     ),
@@ -508,6 +557,7 @@ class _DateCell extends StatelessWidget {
                   alpha: alpha,
                   blocked: blocked,
                 ),
+                _buildIcons(context, data, blockSelected, textColor),
                 _buildLabel(context, text: text, textColor: textColor),
               ],
             ),
@@ -587,6 +637,10 @@ class _Header extends StatelessWidget {
                       builder: (context) {
                         final scheme = ColorScheme.of(context);
                         return HelpButton(
+                          onTap: (context) => showModalBottomSheet(
+                            context: context,
+                            builder: (context) => _SymbolDescriptionSheet(),
+                          ),
                           color: Colors.transparent,
                           borderColor: scheme.onSurface,
                           borderWidth: 2,
@@ -601,6 +655,53 @@ class _Header extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SymbolDescriptionSheet extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final lang = LangText.of(context);
+    final scheme = ColorScheme.of(context);
+    final textTheme = TextTheme.of(context);
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              lang['symbol_description'],
+              style: textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            ...CalendarActivityEnum.values.expand(
+              (activity) => [
+                const Spacer(),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: activity.icon.withColor(scheme.onSurface),
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      lang[activity.localizationKey],
+                      style: textTheme.bodyLarge,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const Spacer(),
+          ],
         ),
       ),
     );

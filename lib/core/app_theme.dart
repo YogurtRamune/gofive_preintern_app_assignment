@@ -56,7 +56,7 @@ abstract final class AppTheme {
         letterSpacing: -0.2, // from pinBody
         color: onSurface,
       ),
-      bodyLarge: baseStyle.copyWith(fontSize: 13.5, color: onSurface),
+      bodyLarge: baseStyle.copyWith(fontSize: 13.5, color: onSurface, letterSpacing: 0),
       labelLarge: baseStyle.copyWith(
         fontSize: 14,
         fontWeight: FontWeight.w500,

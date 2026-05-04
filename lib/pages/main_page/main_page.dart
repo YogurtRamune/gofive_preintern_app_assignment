@@ -10,7 +10,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _currentIndex = 3;
+  int _currentIndex = 1;
 
   // Pages are created once and reused — state is preserved across tab switches.
   final List<Widget> _pages = [
@@ -49,7 +49,7 @@ class _ButtonNav extends StatelessWidget {
       showUnselectedLabels: false,
       elevation: 10.0,
       currentIndex: currentIndex,
-      type: .fixed, // fixed: was missing the type prefix
+      type: .fixed,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined),

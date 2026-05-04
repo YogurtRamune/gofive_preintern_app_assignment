@@ -2,32 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:flutter_preintern_app/core/app_theme.dart';
 import 'package:jiffy/jiffy.dart';
 
-enum CalendarActivityEnum {
-  irregularWork('abnormal_status'),
-  overtime('overtime'),
-  document('document'),
-  activity('activity'),
-  announcement('announcement'),
-  swapShift('swap_shift'),
-  interview('interview'),
-  birthday('birthday'),
-  firstDay('first_day'),
-  lastDay('last_day');
+class CalendarActivityIcon extends StatelessWidget {
+  final String? emoji;
+  final IconData? iconData;
+  final Color? color;
+  const CalendarActivityIcon({super.key, this.emoji, this.iconData, this.color})
+    : assert((emoji == null) != (iconData == null));
 
-  final String localizationKey;
+  CalendarActivityIcon withColor(Color color) => CalendarActivityIcon(
+    key: key,
+    emoji: emoji,
+    iconData: iconData,
+    color: color,
+  );
 
-  const CalendarActivityEnum(this.localizationKey);
+  @override
+  Widget build(BuildContext context) {
+    late final Widget r;
+    if (emoji is String) {
+      r = Text(emoji!, style: TextStyle(color: color));
+    } else if (iconData is IconData) {
+      r = Icon(iconData!, color: color);
+    } else {
+      r = Placeholder();
+    }
+    return AspectRatio(aspectRatio: 1, child: FittedBox(child: r));
+  }
 }
 
-final class CalendarActivity {
-  final CalendarActivityEnum type;
-  final Jiffy time;
-  final String text;
-  const CalendarActivity({
-    required this.type,
-    required this.time,
-    required this.text,
-  });
+enum CalendarActivityEnum {
+  irregularWork(
+    'abnormal_status',
+    CalendarActivityIcon(iconData: Icons.warning_amber_rounded),
+  ),
+  overtime('overtime', CalendarActivityIcon(iconData: Icons.more_time)),
+  document(
+    'document',
+    CalendarActivityIcon(iconData: Icons.description_outlined),
+  ),
+  activity('activity', CalendarActivityIcon(iconData: Icons.calendar_month)),
+  announcement('announcement', CalendarActivityIcon(emoji: '📣')),
+  swapShift('swap_shift', CalendarActivityIcon(iconData: Icons.swap_horiz)),
+  interview('interview', CalendarActivityIcon(emoji: '👥')),
+  birthday('birthday', CalendarActivityIcon(emoji: '🎂')),
+  firstDay('first_day', CalendarActivityIcon(emoji: '👋')),
+  lastDay('last_day', CalendarActivityIcon(emoji: '🍂'));
+
+  final String localizationKey;
+  final CalendarActivityIcon icon;
+  const CalendarActivityEnum(this.localizationKey, this.icon);
 }
 
 enum CalendarRequest {
@@ -44,6 +67,17 @@ enum CalendarRequest {
   final String langKey;
 }
 
+final class CalendarActivity {
+  final CalendarActivityEnum type;
+  final Jiffy time;
+  final String text;
+  const CalendarActivity({
+    required this.type,
+    required this.time,
+    required this.text,
+  });
+}
+
 final class CalendarData {
   final Color color;
   final String text;
@@ -57,6 +91,16 @@ final class CalendarData {
     this.requests = const {},
     this.acitivies = const [],
   });
+
+  List<Widget> icons([Color? color]) {
+    Set<CalendarActivityIcon> iconEnums = {};
+    for (var element in acitivies) {
+      iconEnums.add(element.type.icon);
+    }
+    return iconEnums
+        .map((icon) => color != null ? icon.withColor(color) : icon)
+        .toList();
+  }
 }
 
 final Map<int, Map<int, Map<int, CalendarData>>> calendarData = () {
@@ -77,8 +121,70 @@ final Map<int, Map<int, Map<int, CalendarData>>> calendarData = () {
     final int month = date.month;
     final int day = date.date;
 
-    result.putIfAbsent(year, () => {}).putIfAbsent(month, () => {})[day] =
-        CalendarData(color: color, text: text, blocked: true);
+    result
+        .putIfAbsent(year, () => {})
+        .putIfAbsent(month, () => {})[day] = CalendarData(
+      color: color,
+      text: text,
+      blocked: true,
+      acitivies: [
+        CalendarActivity(
+          type: .activity,
+          time: Jiffy.parseFromList([
+            date.year,
+            date.month,
+            date.date,
+            17,
+            0,
+          ], isUtc: true),
+          text: text,
+        ),
+        CalendarActivity(
+          type: .announcement,
+          time: Jiffy.parseFromList([
+            date.year,
+            date.month,
+            date.date,
+            17,
+            0,
+          ], isUtc: true),
+          text: text,
+        ),
+        CalendarActivity(
+          type: .firstDay,
+          time: Jiffy.parseFromList([
+            date.year,
+            date.month,
+            date.date,
+            17,
+            0,
+          ], isUtc: true),
+          text: text,
+        ),
+        CalendarActivity(
+          type: .document,
+          time: Jiffy.parseFromList([
+            date.year,
+            date.month,
+            date.date,
+            17,
+            0,
+          ], isUtc: true),
+          text: text,
+        ),
+        CalendarActivity(
+          type: .swapShift,
+          time: Jiffy.parseFromList([
+            date.year,
+            date.month,
+            date.date,
+            17,
+            0,
+          ], isUtc: true),
+          text: text,
+        ),
+      ],
+    );
   }
 
   return result;

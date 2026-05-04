@@ -20,13 +20,13 @@ const Map<LanguageEnum, Map<String, String>> _localizeMap = {
     'october': 'October',
     'november': 'November',
     'december': 'December',
-    'mon_short': 'M', 'mon_mid': 'Mon', 'monday': 'Monday',
-    'tue_short': 'T', 'tue_mid': 'Tue', 'tuesday': 'Tuesday',
-    'wed_short': 'W', 'wed_mid': 'Wed', 'wednesday': 'Wednesday',
-    'thu_short': 'TH', 'thu_mid': 'Thu', 'thursday': 'Thursday',
-    'fri_short': 'F', 'fri_mid': 'Fri', 'friday': 'Friday',
-    'sat_short': 'S', 'sat_mid': 'Sat', 'saturday': 'Saturday',
-    'sun_short': 'S', 'sun_mid': 'Sun', 'sunday': 'Sunday',
+    'mon_short': 'M', 'mon_mid': 'Mon,', 'monday': 'Monday',
+    'tue_short': 'T', 'tue_mid': 'Tue,', 'tuesday': 'Tuesday',
+    'wed_short': 'W', 'wed_mid': 'Wed,', 'wednesday': 'Wednesday',
+    'thu_short': 'Th', 'thu_mid': 'Thu,', 'thursday': 'Thursday',
+    'fri_short': 'F', 'fri_mid': 'Fri,', 'friday': 'Friday',
+    'sat_short': 'Sa', 'sat_mid': 'Sat,', 'saturday': 'Saturday',
+    'sun_short': 'Su', 'sun_mid': 'Sun,', 'sunday': 'Sunday',
     'abnormal_status': 'Abnormal working status',
     'overtime': 'Overtime',
     'document': 'Document',
@@ -44,6 +44,7 @@ const Map<LanguageEnum, Map<String, String>> _localizeMap = {
     'collect_time_date': 'Collect Time Date',
     'redeem': 'Redeem',
     'expense': 'Expense',
+    'symbol_description': 'Symbol Description'
   },
   LanguageEnum.th: {
     'january': 'มกราคม',
@@ -82,6 +83,7 @@ const Map<LanguageEnum, Map<String, String>> _localizeMap = {
     'collect_time_date': 'ขอสะสมเวลา',
     'redeem': 'แลกเวลา',
     'expense': 'ค่าใช้จ่าย',
+    'symbol_description': 'คำอธิบายสัญลักษณ์'
   },
 };
 

@@ -18,7 +18,7 @@ class EmpeoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => LanguageBloc(.th))
+        BlocProvider(create: (_) => LanguageBloc(.uk))
       ],
       child: MaterialApp(
         title: 'Empeo',
