@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 /// Central theme definition for the Empeo app.
@@ -16,6 +15,8 @@ abstract final class AppTheme {
   static const outline = Color(0xFFE0E0E0);
   static const outlineVariant = Color(0xFFBDBDBD);
   static const icon = Color.fromARGB(255, 181, 143, 143);
+  static const errorContainer = Color.fromARGB(255, 255, 70, 64);
+  static const onErrorContainer = Color.fromARGB(255, 140, 10, 10);
 
   static const pinBackground = Color.fromARGB(255, 247, 254, 253);
 
@@ -45,7 +46,9 @@ abstract final class AppTheme {
       onSurface: onSurface,
       outline: outline,
       surfaceContainerHigh: surfaceContainerHigh,
-      outlineVariant: outlineVariant
+      outlineVariant: outlineVariant,
+      errorContainer: errorContainer,
+      onErrorContainer: onErrorContainer,
     ),
 
     textTheme: TextTheme(
@@ -56,7 +59,11 @@ abstract final class AppTheme {
         letterSpacing: -0.2, // from pinBody
         color: onSurface,
       ),
-      bodyLarge: baseStyle.copyWith(fontSize: 13.5, color: onSurface, letterSpacing: 0),
+      bodyLarge: baseStyle.copyWith(
+        fontSize: 13.5,
+        color: onSurface,
+        letterSpacing: 0,
+      ),
       labelLarge: baseStyle.copyWith(
         fontSize: 14,
         fontWeight: FontWeight.w500,

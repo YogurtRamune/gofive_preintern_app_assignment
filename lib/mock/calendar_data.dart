@@ -145,7 +145,7 @@ final Map<int, Map<int, Map<int, CalendarData>>> calendarData = () {
       color: color,
       text: text,
       blocked: false,
-      acitivies: [],
+      acitivies: [.new(type: .abnormal, time: date, text: "Abnormal")],
     );
   }
 

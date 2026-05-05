@@ -26,7 +26,7 @@ class CalendarPage extends StatelessWidget {
           month: month,
           year: year,
           repo: context.read<CalendarRepository>(),
-        )..add(CalendarLoadData()), // Initial load on build[cite: 1]
+        )..add(CalendarLoadData()),
         child: const _CalendarView(),
       ),
     );
@@ -104,31 +104,24 @@ class _BottomSheet extends StatelessWidget {
                     state.pickedMonth,
                     state.pickedDate,
                   );
-                  final List<CalendarActivity> activities = [
-                    ...(dayData?.acitivies ?? const <CalendarActivity>[]),
-                  ]..sort(
-                    (a, b) => a.time
-                        .format(pattern: 'HH:mm')
-                        .compareTo(b.time.format(pattern: 'HH:mm')),
-                  );
+                  final List<CalendarActivity> activities =
+                      [...(dayData?.acitivies ?? const <CalendarActivity>[])]
+                        ..sort(
+                          (a, b) => a.time
+                              .format(pattern: 'HH:mm')
+                              .compareTo(b.time.format(pattern: 'HH:mm')),
+                        );
                   final Set<CalendarRequest> requests = dayData?.requests ?? {};
 
                   return CustomScrollView(
                     controller: scrollController,
                     slivers: [
-                      // ── Pinned header that doubles as the drag handle ──
                       _BottomSheetHeader(),
                       SliverToBoxAdapter(child: SizedBox(height: 15)),
                       if (state.isLoading)
                         const SliverFillRemaining(
                           child: Center(child: CircularProgressIndicator()),
                         )
-                      // else if (activities.isEmpty && requests.isEmpty)
-                      //   const SliverFillRemaining(
-                      //     child: Center(
-                      //       child: Icon(Icons.event_busy, size: 48),
-                      //     ),
-                      //   )
                       else ...[
                         if (activities.isNotEmpty)
                           SliverFixedExtentList(
@@ -153,7 +146,7 @@ class _BottomSheet extends StatelessWidget {
                                         Text(act.time.format(pattern: 'HH:mm')),
                                         SizedBox(width: 50),
                                         act.type.icon,
-                                        SizedBox(width: 10,),
+                                        SizedBox(width: 10),
                                         Text(act.text),
                                       ],
                                     ),
@@ -504,13 +497,13 @@ class _DateCell extends StatelessWidget {
 
   Widget _buildDateCircle(
     BuildContext context, {
-    required CalendarState state, // added
+    required CalendarState state,
     required Jiffy date,
     required Color color,
     required int alpha,
     required bool blocked,
   }) {
-    final bool selected = state.isSelected(date); // moved out of BlocBuilder
+    final bool selected = state.isSelected(date);
     final Color contrastColor = contrastColorPrefer(
       color,
       context,
@@ -523,7 +516,6 @@ class _DateCell extends StatelessWidget {
         child: AspectRatio(
           aspectRatio: 1,
           child: Stack(
-            // BlocBuilder removed, Stack is now the direct child
             children: [
               if (selected & !blocked)
                 Positioned.fill(
@@ -588,6 +580,7 @@ class _DateCell extends StatelessWidget {
     CalendarData? data, [
     bool blockedSelected = false,
     Color? color,
+    bool hasAbnormal = false,
   ]) {
     final double borderPadding = _CellBlockedPainter.borderWidth(
       blockedSelected,
@@ -601,12 +594,16 @@ class _DateCell extends StatelessWidget {
             alignment: .bottomCenter,
             child: Padding(
               padding: .only(
-                left: _CellBlockedPainter.thickBorder,
-                right: _CellBlockedPainter.thickBorder,
+                left: borderPadding,
+                right: borderPadding,
               ),
               child: Container(
                 height: constraints.maxHeight / 4.5,
                 decoration: BoxDecoration(
+                  // Red background from theme when any abnormal activity exists
+                  color: hasAbnormal
+                      ? ColorScheme.of(context).errorContainer
+                      : Colors.transparent,
                   borderRadius: .vertical(
                     bottom: Radius.circular(5 - borderPadding),
                   ),
@@ -637,7 +634,6 @@ class _DateCell extends StatelessWidget {
           previous.visibleMonthData != current.visibleMonthData ||
           previous.isLoading != current.isLoading,
       builder: (context, state) {
-        // Hide all cell content while data is being fetched for the month.
         if (state.isLoading) return const SizedBox.expand();
 
         final (date, place) = state.dateAtIndex(index);
@@ -656,6 +652,13 @@ class _DateCell extends StatelessWidget {
         final bool blocked = data?.blocked ?? false;
         final String text = data?.text ?? 'N/A';
         final blockSelected = state.isSelected(date) && blocked;
+
+        // True when at least one activity on this day is of type abnormal
+        final bool hasAbnormal =
+            data?.acitivies.any(
+              (a) => a.type == CalendarActivityEnum.abnormal,
+            ) ??
+            false;
 
         return GestureDetector(
           onTap: () => context.read<CalendarBloc>().add(
@@ -680,13 +683,19 @@ class _DateCell extends StatelessWidget {
                   ),
                 _buildDateCircle(
                   context,
-                  state: state, // passed down
+                  state: state,
                   date: date,
                   color: color,
                   alpha: alpha,
                   blocked: blocked,
                 ),
-                _buildIcons(context, data, blockSelected, textColor),
+                _buildIcons(
+                  context,
+                  data,
+                  blockSelected,
+                  textColor,
+                  hasAbnormal,
+                ),
                 _buildLabel(context, text: text, textColor: textColor),
               ],
             ),
@@ -777,7 +786,6 @@ class _Header extends StatelessWidget {
                         );
                       },
                     ),
-                    // Inside _Header's Positioned widget row
                     SizedBox(width: 5),
                     IconButton(
                       icon: const Icon(Icons.add, size: 30),
@@ -810,7 +818,6 @@ class _CalendarRequestSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final lang = LangText.of(context);
     final textTheme = TextTheme.of(context);
-    // Accessing the theme's color scheme to get the primary color
     final scheme = ColorScheme.of(context);
 
     return SafeArea(
@@ -823,7 +830,6 @@ class _CalendarRequestSheet extends StatelessWidget {
               leading: SizedBox(
                 width: 20,
                 height: 20,
-                // Updated: Applying the theme's primary color to the icon
                 child: request.icon.withColor(scheme.primary),
               ),
               title: Text(lang[request.langKey], style: textTheme.bodyLarge),
