@@ -28,7 +28,7 @@ class CalendarIcon extends StatelessWidget {
 }
 
 enum CalendarActivityEnum {
-  irregularWork(
+  abnormal(
     'abnormal_status',
     CalendarIcon(iconData: Icons.warning_amber_rounded),
   ),
@@ -50,7 +50,7 @@ enum CalendarActivityEnum {
 enum CalendarRequest {
   leave('leave', CalendarIcon(iconData: Icons.event_busy_outlined)),
   offsiteWork('offsite_work', CalendarIcon(iconData: Icons.home_work_outlined)),
-  overtime('overtime_request', CalendarIcon(iconData: Icons.timer_outlined)),
+  overtimeRequest('overtime_request', CalendarIcon(iconData: Icons.timer_outlined)),
   endorse('endorse', CalendarIcon(iconData: Icons.verified_outlined)),
   collectTimeDate(
     'collect_time_date',
@@ -144,64 +144,8 @@ final Map<int, Map<int, Map<int, CalendarData>>> calendarData = () {
         .putIfAbsent(month, () => {})[day] = CalendarData(
       color: color,
       text: text,
-      blocked: true,
-      acitivies: [
-        CalendarActivity(
-          type: .activity,
-          time: Jiffy.parseFromList([
-            date.year,
-            date.month,
-            date.date,
-            17,
-            0,
-          ], isUtc: true),
-          text: "Meeting",
-        ),
-        CalendarActivity(
-          type: .announcement,
-          time: Jiffy.parseFromList([
-            date.year,
-            date.month,
-            date.date,
-            17,
-            0,
-          ], isUtc: true),
-          text: text,
-        ),
-        CalendarActivity(
-          type: .firstDay,
-          time: Jiffy.parseFromList([
-            date.year,
-            date.month,
-            date.date,
-            17,
-            0,
-          ], isUtc: true),
-          text: "Announce",
-        ),
-        CalendarActivity(
-          type: .document,
-          time: Jiffy.parseFromList([
-            date.year,
-            date.month,
-            date.date,
-            17,
-            0,
-          ], isUtc: true),
-          text: text,
-        ),
-        CalendarActivity(
-          type: .swapShift,
-          time: Jiffy.parseFromList([
-            date.year,
-            date.month,
-            date.date,
-            17,
-            0,
-          ], isUtc: true),
-          text: "New",
-        ),
-      ],
+      blocked: false,
+      acitivies: [],
     );
   }
 
@@ -237,6 +181,27 @@ class CalendarRepository {
         color: const Color.fromRGBO(220, 110, 77, 1),
         text: "New Activity",
         acitivies: [activity],
+      );
+    }
+  }
+
+  Future<void> addRequest(int year, int month, int date, CalendarRequest request) async {
+    await Future.delayed(const Duration(milliseconds: 50));
+
+    _db.putIfAbsent(year, () => {});
+    _db[year]!.putIfAbsent(month, () => {});
+
+    final currentDayData = _db[year]![month]![date];
+
+    if (currentDayData != null) {
+      _db[year]![month]![date] = currentDayData.copyWith(
+        requests: {...currentDayData.requests, request},
+      );
+    } else {
+      _db[year]![month]![date] = CalendarData(
+        color: const Color.fromRGBO(220, 110, 77, 1),
+        text: "New Request",
+        requests: {request},
       );
     }
   }

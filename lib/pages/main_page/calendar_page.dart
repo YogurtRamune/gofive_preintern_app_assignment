@@ -104,8 +104,13 @@ class _BottomSheet extends StatelessWidget {
                     state.pickedMonth,
                     state.pickedDate,
                   );
-                  final List<CalendarActivity> activities =
-                      dayData?.acitivies ?? [];
+                  final List<CalendarActivity> activities = [
+                    ...(dayData?.acitivies ?? const <CalendarActivity>[]),
+                  ]..sort(
+                    (a, b) => a.time
+                        .format(pattern: 'HH:mm')
+                        .compareTo(b.time.format(pattern: 'HH:mm')),
+                  );
                   final Set<CalendarRequest> requests = dayData?.requests ?? {};
 
                   return CustomScrollView(
@@ -113,36 +118,18 @@ class _BottomSheet extends StatelessWidget {
                     slivers: [
                       // ── Pinned header that doubles as the drag handle ──
                       _BottomSheetHeader(),
-                      SliverToBoxAdapter(child: SizedBox(height: 15,),),
+                      SliverToBoxAdapter(child: SizedBox(height: 15)),
                       if (state.isLoading)
                         const SliverFillRemaining(
                           child: Center(child: CircularProgressIndicator()),
                         )
-                      else if (activities.isEmpty && requests.isEmpty)
-                        const SliverFillRemaining(
-                          child: Center(
-                            child: Icon(Icons.event_busy, size: 48),
-                          ),
-                        )
+                      // else if (activities.isEmpty && requests.isEmpty)
+                      //   const SliverFillRemaining(
+                      //     child: Center(
+                      //       child: Icon(Icons.event_busy, size: 48),
+                      //     ),
+                      //   )
                       else ...[
-                        if (requests.isNotEmpty)
-                          SliverFixedExtentList(
-                            itemExtent: 56,
-                            delegate: SliverChildBuilderDelegate((context, i) {
-                              final req = requests.elementAt(i);
-                              final lang = LangText.of(context);
-                              return ListTile(
-                                leading: SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: req.icon.withColor(
-                                    ColorScheme.of(context).primary,
-                                  ),
-                                ),
-                                title: Text(lang[req.langKey]),
-                              );
-                            }, childCount: requests.length),
-                          ),
                         if (activities.isNotEmpty)
                           SliverFixedExtentList(
                             itemExtent: 40,
@@ -164,17 +151,50 @@ class _BottomSheet extends StatelessWidget {
                                       mainAxisSize: .max,
                                       children: [
                                         Text(act.time.format(pattern: 'HH:mm')),
-                                        SizedBox(width: 50,),
+                                        SizedBox(width: 50),
                                         act.type.icon,
-                                        Text(
-                                          act.text
-                                        ),
+                                        SizedBox(width: 10,),
+                                        Text(act.text),
                                       ],
                                     ),
                                   ),
                                 ),
                               );
                             }, childCount: activities.length),
+                          ),
+                        if (requests.isNotEmpty)
+                          SliverFixedExtentList(
+                            itemExtent: 40,
+                            delegate: SliverChildBuilderDelegate((context, i) {
+                              final req = requests.elementAt(i);
+                              final lang = LangText.of(context);
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 2,
+                                  horizontal: 20,
+                                ),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: ColorScheme.of(context).surface,
+                                    borderRadius: .circular(7),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: .max,
+                                      children: [
+                                        SizedBox(width: 90),
+                                        req.icon.withColor(
+                                          ColorScheme.of(context).primary,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(lang[req.langKey]),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }, childCount: requests.length),
                           ),
                       ],
                     ],
@@ -808,15 +828,7 @@ class _CalendarRequestSheet extends StatelessWidget {
               ),
               title: Text(lang[request.langKey], style: textTheme.bodyLarge),
               onTap: () {
-                calendarBloc.add(
-                  CalendarAddRequest(
-                    CalendarActivity(
-                      type: CalendarActivityEnum.activity,
-                      time: Jiffy.now(),
-                      text: lang[request.langKey],
-                    ),
-                  ),
-                );
+                calendarBloc.add(CalendarAddRequest(request));
                 Navigator.pop(context);
               },
             );

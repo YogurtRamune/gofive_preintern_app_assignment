@@ -23,8 +23,8 @@ class CalendarPickDate extends CalendarEvent {
 }
 
 class CalendarAddRequest extends CalendarEvent {
-  final CalendarActivity activity;
-  const CalendarAddRequest(this.activity);
+  final CalendarRequest request;
+  const CalendarAddRequest(this.request);
 }
 
 typedef CalendarVisibleMonthData =
@@ -154,11 +154,11 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     );
 
     on<CalendarAddRequest>((event, emit) async {
-      await repo.addActivity(
+      await repo.addRequest(
         state.pickedYear,
         state.pickedMonth,
         state.pickedDate,
-        event.activity,
+        event.request,
       );
       add(CalendarLoadData());
     });
