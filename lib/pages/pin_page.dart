@@ -1,10 +1,10 @@
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_preintern_app/bloc/pin_bloc.dart';
 import 'package:flutter_preintern_app/core/app_theme.dart';
+import 'package:flutter_preintern_app/pages/main_page/main_page.dart';
 
 class PinPage extends StatelessWidget {
   const PinPage({super.key});
@@ -68,97 +68,107 @@ class PinPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => PinBloc(),
-      child: Scaffold(
-        backgroundColor: AppTheme.pinBackground,
-        body: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constrain) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Image.asset('asset/img/deco/pin_bg.png'),
-                        ),
-                        Align(
-                          alignment: Alignment(0, -0.5),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                "Create your PIN",
-                                style: Theme.of(
-                                  context,
-                                ).extension<AppTextStyles>()!.pinHeader,
-                              ),
-                              Text(
-                                "To allow secure access to app and payslip information",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              SizedBox(height: 25),
-                              SizedBox.square(
-                                dimension: 80,
-                                child: Stack(
-                                  children: [
-                                    SizedBox.expand(child: _PinIndicator()),
-                                    SizedBox.expand(
-                                      child: Padding(
-                                        padding: EdgeInsets.all(2),
-                                        child: DecoratedBox(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: AppTheme.surface,
-                                          ),
-                                          child: Center(
-                                            child: Image.asset(
-                                              'asset/img/icon/lock.png',
-                                              fit: BoxFit.contain,
-                                              isAntiAlias: true,
-                                              filterQuality: .high,
-                                              width: 35,
-                                              height: 35,
+      child: BlocListener<PinBloc, PinState>(
+        listenWhen: (previous, current) =>
+            previous.filledCount != current.filledCount &&
+            current.filledCount == 6,
+        listener: (context, state) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const MainPage()),
+          );
+        },
+        child: Scaffold(
+          backgroundColor: AppTheme.pinBackground,
+          body: SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constrain) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Image.asset('asset/img/deco/pin_bg.png'),
+                          ),
+                          Align(
+                            alignment: Alignment(0, -0.5),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "Create your PIN",
+                                  style: Theme.of(
+                                    context,
+                                  ).extension<AppTextStyles>()!.pinHeader,
+                                ),
+                                Text(
+                                  "To allow secure access to app and payslip information",
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                SizedBox(height: 25),
+                                SizedBox.square(
+                                  dimension: 80,
+                                  child: Stack(
+                                    children: [
+                                      SizedBox.expand(child: _PinIndicator()),
+                                      SizedBox.expand(
+                                        child: Padding(
+                                          padding: EdgeInsets.all(2),
+                                          child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: AppTheme.surface,
+                                            ),
+                                            child: Center(
+                                              child: Image.asset(
+                                                'asset/img/icon/lock.png',
+                                                fit: BoxFit.contain,
+                                                isAntiAlias: true,
+                                                filterQuality: .high,
+                                                width: 35,
+                                                height: 35,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 15),
-                              Text(
-                                "Enter 6 digit pin code.",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              SizedBox(height: 7),
-                              SizedBox(
-                                height: 25,
-                                child: FractionallySizedBox(
-                                  widthFactor: 0.27,
-                                  child: _PinCircles(),
+                                SizedBox(height: 15),
+                                Text(
+                                  "Enter 6 digit pin code.",
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 7),
+                                SizedBox(
+                                  height: 25,
+                                  child: FractionallySizedBox(
+                                    widthFactor: 0.27,
+                                    child: Expanded(child: _PinCircles()),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: constrain.maxHeight / 3,
-                    child: ColoredBox(
-                      color: Theme.of(context).colorScheme.surface,
-                      child: _buildNumpad(),
+                    SizedBox(
+                      height: constrain.maxHeight / 3,
+                      child: ColoredBox(
+                        color: Theme.of(context).colorScheme.surface,
+                        child: _buildNumpad(),
+                      ),
                     ),
-                  ),
-                ],
-              );
-            },
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

@@ -24,7 +24,7 @@ class EmpeoApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
         // home: PinPage()
-        home: PinPage(),
+        home: InvitationCodePage(),
       ),
     );
   }
