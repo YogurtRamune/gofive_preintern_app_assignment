@@ -4,6 +4,8 @@ import 'package:flutter_preintern_app/component/pages/start/start_page_scaffold.
 import 'package:flutter_preintern_app/component/pages/start/start_primary_button.dart';
 import 'package:flutter_preintern_app/component/pages/start/start_text_field.dart';
 import 'package:flutter_preintern_app/core/app_theme.dart';
+import 'package:flutter_preintern_app/pages/main_page/main_page.dart';
+import 'package:flutter_preintern_app/pages/pin_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _onSignIn() {
+  void _onSignIn(BuildContext context) {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     if (email.isEmpty || password.isEmpty) {
@@ -33,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       return;
     }
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => PinPage()));
     // TODO: Handle sign-in logic
     debugPrint('Sign in: $email');
   }
@@ -103,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
 
         const SizedBox(height: 6),
 
-        StartPrimaryButton(label: 'Sign in', onPressed: _onSignIn),
+        StartPrimaryButton(label: 'Sign in', onPressed: () => _onSignIn(context)),
 
         const SizedBox(height: 28),
 

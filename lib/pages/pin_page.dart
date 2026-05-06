@@ -140,7 +140,7 @@ class PinPage extends StatelessWidget {
                                 height: 25,
                                 child: FractionallySizedBox(
                                   widthFactor: 0.27,
-                                  child: Expanded(child: _PinCircles()),
+                                  child: _PinCircles(),
                                 ),
                               ),
                             ],

@@ -50,7 +50,10 @@ enum CalendarActivityEnum {
 enum CalendarRequest {
   leave('leave', CalendarIcon(iconData: Icons.event_busy_outlined)),
   offsiteWork('offsite_work', CalendarIcon(iconData: Icons.home_work_outlined)),
-  overtimeRequest('overtime_request', CalendarIcon(iconData: Icons.timer_outlined)),
+  overtimeRequest(
+    'overtime_request',
+    CalendarIcon(iconData: Icons.timer_outlined),
+  ),
   endorse('endorse', CalendarIcon(iconData: Icons.verified_outlined)),
   collectTimeDate(
     'collect_time_date',
@@ -145,9 +148,54 @@ final Map<int, Map<int, Map<int, CalendarData>>> calendarData = () {
       color: color,
       text: text,
       blocked: false,
-      acitivies: [.new(type: .abnormal, time: date, text: "Abnormal")],
+      // acitivies: [.new(type: .abnormal, time: date, text: "Abnormal")],
     );
   }
+
+  result[2026]?[1]?[1] = CalendarData(
+    color: AppTheme.surface,
+    text: "OFF",
+    blocked: true,
+  );
+  result[2026]?[1]?[2] = CalendarData(
+    color: AppTheme.primary,
+    text: result[2026]?[1]?[2]?.text ?? "OFF",
+    blocked: true,
+    acitivies: [
+      .new(
+        type: .abnormal,
+        time: Jiffy.parseFromList([2026, 1, 2]),
+        text: "Abnormal",
+      ),
+    ],
+  );
+  result[2026]?[1]?[3] = CalendarData(
+    color: AppTheme.surface,
+    text: "OFF",
+    blocked: false,
+    acitivies: [
+      .new(
+        type: .announcement,
+        time: Jiffy.parseFromList([2026, 1, 3]),
+        text: "Activity",
+      ),
+      .new(
+        type: .birthday,
+        time: Jiffy.parseFromList([2026, 1, 3]),
+        text: "Activity",
+      ),
+      .new(
+        type: .document,
+        time: Jiffy.parseFromList([2026, 1, 3]),
+        text: "Activity",
+      ),
+      .new(
+        type: .firstDay,
+        time: Jiffy.parseFromList([2026, 1, 3]),
+        text: "Activity",
+      ),
+    ],
+  );
 
   return result;
 }();
@@ -162,12 +210,17 @@ class CalendarRepository {
     return _db[year]?[month] ?? {};
   }
 
-  Future<void> addActivity(int year, int month, int date, CalendarActivity activity) async {
+  Future<void> addActivity(
+    int year,
+    int month,
+    int date,
+    CalendarActivity activity,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 50));
-    
+
     _db.putIfAbsent(year, () => {});
     _db[year]!.putIfAbsent(month, () => {});
-    
+
     final currentDayData = _db[year]![month]![date];
 
     if (currentDayData != null) {
@@ -185,7 +238,12 @@ class CalendarRepository {
     }
   }
 
-  Future<void> addRequest(int year, int month, int date, CalendarRequest request) async {
+  Future<void> addRequest(
+    int year,
+    int month,
+    int date,
+    CalendarRequest request,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 50));
 
     _db.putIfAbsent(year, () => {});

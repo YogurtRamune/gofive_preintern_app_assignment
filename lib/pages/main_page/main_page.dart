@@ -39,7 +39,7 @@ class _ButtonNav extends StatelessWidget {
   final int currentIndex;
   final void Function(int)? onTap;
 
-  const _ButtonNav({required this.currentIndex, this.onTap, super.key});
+  const _ButtonNav({required this.currentIndex, this.onTap});
 
   @override
   Widget build(BuildContext context) {

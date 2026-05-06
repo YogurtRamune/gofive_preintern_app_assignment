@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_preintern_app/component/pages/start/start_page_scaffold.dart';
 import 'package:flutter_preintern_app/component/pages/start/start_primary_button.dart';
 import 'package:flutter_preintern_app/component/pages/start/start_text_field.dart';
+import 'package:flutter_preintern_app/pages/start/login_page.dart';
 
 class InvitationCodePage extends StatefulWidget {
   const InvitationCodePage({super.key});
@@ -31,8 +32,9 @@ class _InvitationCodePageState extends State<InvitationCodePage> {
     debugPrint('Invitation Code: $code');
   }
 
-  void _onSkip() {
+  void _onSkip(BuildContext context) {
     // TODO: Handle skip logic
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginPage(),));
     debugPrint('Skipped invitation code entry.');
   }
 
@@ -55,7 +57,7 @@ class _InvitationCodePageState extends State<InvitationCodePage> {
         const SizedBox(height: 22),
         StartPrimaryButton(label: 'Confirm', onPressed: _onConfirm),
         const SizedBox(height: 10),
-        TextButton(onPressed: _onSkip, child: const Text('Skip')),
+        TextButton(onPressed: () => _onSkip(context), child: const Text('Skip')),
       ],
     );
   }

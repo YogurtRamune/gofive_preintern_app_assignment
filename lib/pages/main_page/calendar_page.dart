@@ -15,7 +15,7 @@ import 'package:jiffy/jiffy.dart';
 
 class CalendarPage extends StatelessWidget {
   final int month, year;
-  const CalendarPage({super.key, this.month = 2, this.year = 2026});
+  const CalendarPage({super.key, this.month = 1, this.year = 2026});
 
   @override
   Widget build(BuildContext context) {
